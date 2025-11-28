@@ -264,7 +264,7 @@
         .status-yellow { background: #FFD93D; color: #555; }
         .status-red { background: #FF6B6B; }
 
-        /* Phase 4 內部 Tab & Tools 的 Tab 樣式 */
+        /* Tab 樣式 */
         .tab-nav { display: flex; gap: 1rem; border-bottom: 2px solid #F0F0F0; margin-bottom: 2.5rem; overflow-x: auto; padding-bottom: 10px; }
         .tab-btn { 
             padding: 10px 20px; background: none; border: none; font-size: 1.1rem; 
@@ -286,6 +286,38 @@
         #markdown-container ul { padding-left: 1.5rem; margin-bottom: 1rem; }
         #markdown-container a { color: var(--color-sage); font-weight: bold; text-decoration: none; border-bottom: 1px dashed var(--color-sage); }
 
+
+        /* --- ★★★ 計算機專用樣式補丁 ★★★ --- */
+        .calc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem; }
+        .calc-label { font-weight: 700; color: var(--text-main); margin-bottom: 8px; display: block; font-size: 0.95rem; }
+        .calc-unit { color: #999; font-size: 0.85rem; margin-left: 5px; font-weight: normal; }
+
+        /* 模擬 Water Diary 風格的 Radio Group */
+        .wd-radio-group { display: flex; gap: 15px; margin-bottom: 15px; }
+        .wd-radio-group label { 
+            background: white; border: 2px solid #EEE; padding: 10px 20px; 
+            border-radius: 50px; cursor: pointer; transition: 0.2s; font-weight: 700; color: #999; font-size: 0.9rem;
+        }
+        .wd-radio-group input { display: none; }
+        .wd-radio-group input:checked + span { color: var(--color-rose); }
+        .wd-radio-group label:has(input:checked) { border-color: var(--color-rose); background: var(--color-rose-light); color: var(--color-rose); }
+
+        /* 結果區塊美化 */
+        .result-display-box { 
+            background: white; border-radius: 16px; padding: 1.5rem; 
+            border: 1px dashed #DDD; margin-top: 1.5rem; 
+            box-shadow: 0 5px 20px rgba(0,0,0,0.03); 
+        }
+        .result-line { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #F0F0F0; font-size: 1rem; }
+        .result-line.final { border: none; margin-top: 10px; padding-top: 15px; border-top: 2px solid var(--color-sage); }
+        .result-val { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--text-title); }
+        .result-val.highlight { color: var(--color-rose); font-size: 1.4rem; }
+
+        /* 速查表格 */
+        .quick-table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.9rem; }
+        .quick-table th { background: var(--color-sand); color: white; padding: 12px; border-radius: 8px 8px 0 0; }
+        .quick-table td { padding: 12px; border-bottom: 1px solid #EEE; text-align: center; }
+        .quick-table tr:hover td { background: var(--color-sand-light); }
 
         /* RWD 響應式優化 */
         @media (max-width: 900px) {
@@ -351,8 +383,13 @@
             <div class="nav-item active" data-target="dashboard" onclick="navigate('dashboard')">
                 <div style="display:flex; align-items:center;"><span class="nav-icon">✨</span> 總覽 Daily</div>
             </div>
+            
+            <div class="nav-item" data-target="calculator" onclick="navigate('calculator')">
+                <div style="display:flex; align-items:center;"><span class="nav-icon">🧮</span> 計算機 Tool</div>
+            </div>
+
             <div class="nav-item" data-target="tools" onclick="navigate('tools')">
-                <div style="display:flex; align-items:center;"><span class="nav-icon">🌿</span> 實務 Tools</div>
+                <div style="display:flex; align-items:center;"><span class="nav-icon">🌿</span> 資料庫 Data</div>
             </div>
             
             <div class="nav-item nav-dropdown-trigger" id="btn-learn" onclick="toggleDropdown('menu-learn')">
@@ -368,7 +405,7 @@
             </div>
 
             <div class="nav-item">
-                <div style="display:flex; align-items:center;"><span class="nav-icon">☁️</span> 雲端 Data</div>
+                <div style="display:flex; align-items:center;"><span class="nav-icon">☁️</span> 雲端 Cloud</div>
             </div>
         </div>
     </nav>
@@ -382,9 +419,198 @@
             </header>
             <div class="grid-cards">
                 <div class="pretty-card" onclick="navigate('tools')"><div class="card-emoji">📂</div><div class="card-name">資料庫</div><div class="card-desc">點此查詢 QGIS、地政、水利相關操作手冊。</div></div>
-                <div class="pretty-card"><div class="card-emoji">🧮</div><div class="card-name">污水管流簡易計算機</div><div class="card-desc">輸入水量與管徑，快速判斷設計合理性。</div></div>
+                
+                <div class="pretty-card" onclick="navigate('calculator')"><div class="card-emoji">🧮</div><div class="card-name">污水管流計算機</div><div class="card-desc">流量推估、單管檢核與管徑速查表。</div></div>
+                
                 <div class="pretty-card"><div class="card-emoji">🧪</div><div class="card-name">工程小幫手</div><div class="card-desc">常用管徑換算。</div></div>
                 <div class="pretty-card"><div class="card-emoji">🚑</div><div class="card-name">SOS 救援</div><div class="card-desc">異常狀況排除的標準流程決策樹。</div></div>
+            </div>
+        </section>
+
+        <section id="view-calculator" class="view-section">
+            <header>
+                <div style="font-size:0.9rem; color:var(--color-rose); font-weight:700; margin-bottom:10px; letter-spacing:1px;">ENGINEERING TOOL</div>
+                <h1>Hydraulic <span style="color:var(--color-rose);">Calculator</span></h1>
+            </header>
+
+            <div class="tab-nav">
+                <button class="tab-btn active" onclick="switchCalcTab('tab1', this)">1. 流量推估</button>
+                <button class="tab-btn" onclick="switchCalcTab('tab2', this)">2. 水理檢核</button>
+                <button class="tab-btn" onclick="switchCalcTab('tab3', this)">3. 管徑速查</button>
+            </div>
+
+            <div id="tab1" class="inner-tab-content active">
+                <div class="chapter-body">
+                    <h3 style="margin-top:0;">1. 計畫人口 (Population)</h3>
+                    
+                    <div class="wd-radio-group">
+                        <label><input type="radio" name="popMode" value="density" checked onchange="togglePopMode()"><span>依密度推估</span></label>
+                        <label><input type="radio" name="popMode" value="direct" onchange="togglePopMode()"><span>直接輸入</span></label>
+                    </div>
+
+                    <div id="popInputDensity">
+                        <div class="calc-grid">
+                            <div>
+                                <span class="calc-label">住宅區面積 (ha)</span>
+                                <input type="number" id="resArea" class="login-input" style="margin:0; padding:10px;" placeholder="0">
+                            </div>
+                            <div>
+                                <span class="calc-label">住宅區密度 (人/ha)</span>
+                                <input type="number" id="resDensity" class="login-input" style="margin:0; padding:10px;" placeholder="0">
+                            </div>
+                            <div>
+                                <span class="calc-label">商業區面積 (ha)</span>
+                                <input type="number" id="comArea" class="login-input" style="margin:0; padding:10px;" placeholder="0">
+                            </div>
+                            <div>
+                                <span class="calc-label">商業區密度 (人/ha)</span>
+                                <input type="number" id="comDensity" class="login-input" style="margin:0; padding:10px;" placeholder="0">
+                            </div>
+                        </div>
+                        <div class="note-box" style="padding:10px 20px; display:flex; justify-content:space-between; align-items:center;">
+                            <span style="font-weight:bold; color:var(--text-main);">目前推估人口：</span>
+                            <span style="font-size:1.5rem; font-weight:800; color:var(--color-rose);" id="calcPopResult">0</span>
+                        </div>
+                    </div>
+
+                    <div id="popInputDirect" style="display:none; margin-bottom:20px;">
+                        <span class="calc-label">直接輸入計畫人口數</span>
+                        <input type="number" id="population" class="login-input" style="margin:0;" placeholder="例如: 5000">
+                    </div>
+
+                    <div class="calc-grid" style="margin-top:20px;">
+                        <div>
+                            <span class="calc-label">單位污水量 (LPCD)</span>
+                            <input type="number" id="lpcd" class="login-input" style="margin:0; padding:10px;" value="225">
+                        </div>
+                        <div>
+                            <span class="calc-label">地下水入滲率 (%)</span>
+                            <input type="number" id="infiltrationRate" class="login-input" style="margin:0; padding:10px;" value="10">
+                        </div>
+                    </div>
+
+                    <h3 style="border-left-color:var(--color-sage); color:var(--color-sage);">2. 其他分區污水量 (Optional)</h3>
+                    <div class="calc-grid">
+                        <div><span class="calc-label">工業區 (ha)</span><input type="number" id="indArea" class="login-input" style="margin:0; padding:8px;"></div>
+                        <div><span class="calc-label">單位量 (CMD/ha)</span><input type="number" id="indUnit" class="login-input" style="margin:0; padding:8px;" value="10"></div>
+                        <div><span class="calc-label">機關用地 (ha)</span><input type="number" id="govArea" class="login-input" style="margin:0; padding:8px;"></div>
+                        <div><span class="calc-label">單位量 (CMD/ha)</span><input type="number" id="govUnit" class="login-input" style="margin:0; padding:8px;" value="50"></div>
+                    </div>
+                    <div style="display:none;">
+                        <input type="number" id="schArea"><input type="number" id="schUnit" value="50">
+                        <input type="number" id="parkArea"><input type="number" id="parkUnit" value="8">
+                    </div>
+
+                    <button class="login-btn" onclick="calculateFlow()" style="width:100%; margin-top:20px;">計算設計流量 Calculate</button>
+
+                    <div class="result-display-box" style="border-color:var(--color-rose-light); background: #FFF0F3;">
+                        <div class="result-line"><span>基礎污水量 (Base Flow)</span><span class="result-val" id="calcBaseFlow">0</span></div>
+                        <div class="result-line"><span>入滲水量 (Infiltration)</span><span class="result-val" id="calcInfFlow">0</span></div>
+                        <div class="result-line"><span>尖峰係數 (PF)</span><span class="result-val" id="resPF">0</span></div>
+                        <div class="result-line final">
+                            <span>設計流量 (Q<sub>design</sub>)</span>
+                            <span class="result-val highlight" id="resQdesign">0 CMD</span>
+                        </div>
+                        <div style="text-align:right; font-size:0.85rem; color:#888; margin-top:5px;">( = <span id="resQdesignCMS">0</span> CMS )</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab2" class="inner-tab-content">
+                <div class="chapter-body">
+                    <button class="login-btn" onclick="importFlowToTab('tab2')" style="background:var(--color-sage); font-size:0.9rem; padding:8px 20px; margin-bottom:20px;">⬇ 帶入 Tab 1 流量</button>
+                    
+                    <div class="calc-grid">
+                        <div>
+                            <span class="calc-label">設計流量 Q</span>
+                            <div style="display:flex; gap:10px;">
+                                <input type="number" id="hydQ" class="login-input" style="margin:0; padding:10px; flex:2;">
+                                <select id="hydQUnit" class="login-input" style="margin:0; padding:10px; flex:1;">
+                                    <option value="CMD">CMD</option>
+                                    <option value="CMS">CMS</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="calc-label">管徑 D (mm)</span>
+                            <input type="number" id="hydD" class="login-input" style="margin:0; padding:10px;" value="700" step="50">
+                        </div>
+                        <div>
+                            <span class="calc-label">坡度 S (%)</span>
+                            <input type="number" id="hydS" class="login-input" style="margin:0; padding:10px;" value="0.8" step="0.01">
+                        </div>
+                        <div>
+                            <span class="calc-label">曼寧 n 值</span>
+                            <input type="number" id="hydN" class="login-input" style="margin:0; padding:10px;" value="0.015" step="0.001">
+                        </div>
+                    </div>
+
+                    <button class="login-btn" onclick="calculateSinglePipe()" style="width:100%; background:var(--color-sage);">開始檢核 Check</button>
+
+                    <div id="hydResultBox" class="result-display-box" style="display:none; border-color:var(--color-sage-light); background:#F0FDF4;">
+                        <div class="result-line"><span>滿管流速 (V<sub>full</sub>)</span><span class="result-val" id="resVfull"></span></div>
+                        <div class="result-line"><span>滿管流量 (Q<sub>full</sub>)</span><span class="result-val" id="resQfull"></span></div>
+                        <div class="result-line"><span>流量比 (Q/Q<sub>f</sub>)</span><span class="result-val" id="resRatioQ"></span></div>
+                        <div class="result-line"><span>水深比 (h/D)</span><span class="result-val" id="resRatioH"></span></div>
+                        <div class="result-line final">
+                            <span>設計流速 (V)</span>
+                            <span class="result-val highlight" style="color:var(--color-sage);" id="resVdesign"></span>
+                        </div>
+                        <div style="margin-top:15px; text-align:center;" id="resStatus"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab3" class="inner-tab-content">
+                <div class="chapter-body">
+                    <button class="login-btn" onclick="importFlowToTab('tab3')" style="background:var(--color-sand); font-size:0.9rem; padding:8px 20px; margin-bottom:20px;">⬇ 帶入 Tab 1 流量</button>
+                    
+                    <div class="calc-grid">
+                        <div>
+                            <span class="calc-label">設計流量 Q</span>
+                            <div style="display:flex; gap:10px;">
+                                <input type="number" id="quickQ" class="login-input" style="margin:0; padding:10px; flex:2;">
+                                <select id="quickQUnit" class="login-input" style="margin:0; padding:10px; flex:1;">
+                                    <option value="CMD">CMD</option>
+                                    <option value="CMS">CMS</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="calc-label">曼寧 n 值</span>
+                            <input type="number" id="quickN" class="login-input" style="margin:0; padding:10px;" value="0.015">
+                        </div>
+                    </div>
+
+                    <div class="note-box" style="margin: 0 0 20px 0; background:var(--color-sand-light); border-color:var(--color-sand);">
+                        <div style="font-weight:700; color:var(--color-sand); margin-bottom:10px;">限制條件 Constraints</div>
+                        <div style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
+                            <span>流速範圍：</span>
+                            <input type="number" id="limVmin" value="0.6" style="width:60px; padding:5px; border:1px solid #ddd; border-radius:5px; text-align:center;">
+                            <span>~</span>
+                            <input type="number" id="limVmax" value="3.0" style="width:60px; padding:5px; border:1px solid #ddd; border-radius:5px; text-align:center;">
+                            <span>m/s</span>
+                        </div>
+                        <div style="font-size:0.85rem; color:#666;">
+                            水深比 (h/D)：管徑&le;500mm 限 0.5；管徑&ge;600mm 限 0.8
+                        </div>
+                    </div>
+
+                    <button class="login-btn" onclick="runQuickCheck()" style="width:100%; background:var(--color-sand);">生成速查表 Generate</button>
+
+                    <div id="quickCheckResult" style="display:none; overflow-x:auto;">
+                        <table class="quick-table">
+                            <thead>
+                                <tr>
+                                    <th>管徑 (mm)</th>
+                                    <th>可行坡度範圍 (%)</th>
+                                    <th>檢核結果</th>
+                                </tr>
+                            </thead>
+                            <tbody id="quickCheckBody"></tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -845,7 +1071,7 @@
             }
         }
 
-        // Tab Switching Logic (Inner Tabs)
+        // Tab Switching Logic (Phase 4 Inner Tabs)
         function switchInnerTab(tabId, btn) {
             const parentSection = btn.closest('.view-section');
             parentSection.querySelectorAll('.inner-tab-content').forEach(el => el.classList.remove('active'));
@@ -926,18 +1152,7 @@
                     return response.text();
                 })
                 .then(text => {
-                    // ★★★ 重點修復區域 ★★★
-                    // 將 Obsidian 的 ![[檔名]] 直接轉換為 HTML 的 <img src="...">
-                    // 這樣可以避免 Markdown 解析器對於檔名中含有「空白鍵」的錯誤判讀
-                    
-                    // Regex 解釋：
-                    // !\[\[       -> 抓取開頭的 ![[
-                    // ([^|\]]+)   -> 抓取檔名 (排除 | 和 ])
-                    // (?:\|.*?)?  -> 忽略後面的 |寬度設定 (如果有)
-                    // \]\]        -> 抓取結尾的 ]]
-                    
                     text = text.replace(/!\[\[([^|\]]+)(?:\|[^\]]*)?\]\]/g, (match, filename) => {
-                        // 回傳標準的 HTML 圖片標籤
                         return `<img src="notes/所有圖片/${filename}" alt="${filename}" style="max-width:100%; border-radius:12px; margin: 1rem 0; box-shadow:0 5px 15px rgba(0,0,0,0.1);">`;
                     });
 
@@ -949,10 +1164,229 @@
                     container.innerHTML = `<p style="color:red;">讀取失敗：無法載入 <b>${filename}</b><br>請確認檔案是否已放入【notes】資料夾中。</p>`;
                 });
         }
+
+
+        // ==========================================
+        // ★★★ 完整版水理計算機邏輯 ★★★
+        // ==========================================
+        
+        let globalDesignFlowCMS = 0; // 全域變數儲存分頁一的結果
+
+        // Tab 切換邏輯 (計算機專用)
+        function switchCalcTab(tabId, btn) {
+            const parent = document.getElementById('view-calculator');
+            parent.querySelectorAll('.inner-tab-content').forEach(el => el.classList.remove('active'));
+            parent.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        // 人口模式切換
+        function togglePopMode() {
+            const mode = document.querySelector('input[name="popMode"]:checked').value;
+            if (mode === 'direct') {
+                document.getElementById('popInputDirect').style.display = 'block';
+                document.getElementById('popInputDensity').style.display = 'none';
+            } else {
+                document.getElementById('popInputDirect').style.display = 'none';
+                document.getElementById('popInputDensity').style.display = 'block';
+            }
+        }
+
+        // 帶入流量按鈕
+        function importFlowToTab(tab) {
+            if (globalDesignFlowCMS === 0) { alert("請先在【Tab 1】計算流量！"); return; }
+            let targetId = (tab === 'tab2') ? 'hydQ' : 'quickQ';
+            let unitId = (tab === 'tab2') ? 'hydQUnit' : 'quickQUnit';
+            let unit = document.getElementById(unitId).value;
+            let val = (unit === 'CMS') ? globalDesignFlowCMS : globalDesignFlowCMS * 86400;
+            document.getElementById(targetId).value = parseFloat(val.toFixed(4));
+        }
+
+        // --- 核心數學引擎 ---
+        function getGeoElements(theta) {
+            if (theta <= 0) return { a:0, r:0 };
+            if (theta >= 2*Math.PI) return { a:1, r:1 };
+            let ratioA = (theta - Math.sin(theta)) / (2 * Math.PI);
+            let ratioR = 1 - Math.sin(theta) / theta;
+            return { a: ratioA, r: ratioR };
+        }
+
+        function solveManning(Q, D, S, n) {
+            const A_full = Math.PI * Math.pow(D/2, 2);
+            const R_full = D/4;
+            const V_full = (1/n) * Math.pow(R_full, 2/3) * Math.pow(S, 0.5);
+            const Q_full = A_full * V_full;
+
+            if (Q >= Q_full) return { v: V_full, h: 1.0, qRatio: Q/Q_full, status: "爆管 (Q>Qfull)" };
+            
+            const ratioQ = Q / Q_full;
+            let low = 0, high = 2 * Math.PI, theta = 0;
+            for(let i=0; i<30; i++) {
+                theta = (low+high)/2;
+                let geo = getGeoElements(theta);
+                let calcRatio = geo.a * Math.pow(geo.r, 2/3);
+                if (calcRatio < ratioQ) low = theta; else high = theta;
+            }
+
+            let geoFinal = getGeoElements(theta);
+            let h_d = (1 - Math.cos(theta/2)) / 2;
+            let v_part = V_full * Math.pow(geoFinal.r, 2/3);
+            return { v: v_part, h: h_d, qRatio: ratioQ, status: "OK" };
+        }
+
+        // --- TAB 1 邏輯 ---
+        function calculateFlow() {
+            // 1. 人口
+            const mode = document.querySelector('input[name="popMode"]:checked').value;
+            let pop = 0;
+            if (mode === 'direct') {
+                pop = parseFloat(document.getElementById('population').value) || 0;
+            } else {
+                const resA = parseFloat(document.getElementById('resArea').value) || 0;
+                const resD = parseFloat(document.getElementById('resDensity').value) || 0;
+                const comA = parseFloat(document.getElementById('comArea').value) || 0;
+                const comD = parseFloat(document.getElementById('comDensity').value) || 0;
+                pop = (resA * resD) + (comA * comD);
+                document.getElementById('calcPopResult').innerText = pop.toLocaleString();
+            }
+
+            // 2. 參數
+            const lpcd = parseFloat(document.getElementById('lpcd').value)||0;
+            const infRate = parseFloat(document.getElementById('infiltrationRate').value)||0;
+            
+            let others = 0;
+            // 簡化版: 只取顯示出來的欄位
+            others += (parseFloat(document.getElementById('indArea').value)||0) * (parseFloat(document.getElementById('indUnit').value)||0);
+            others += (parseFloat(document.getElementById('govArea').value)||0) * (parseFloat(document.getElementById('govUnit').value)||0);
+            others += (parseFloat(document.getElementById('schArea').value)||0) * (parseFloat(document.getElementById('schUnit').value)||0); // 即使隱藏也會讀取
+            others += (parseFloat(document.getElementById('parkArea').value)||0) * (parseFloat(document.getElementById('parkUnit').value)||0);
+
+            // 3. 計算
+            const qDom = pop * lpcd / 1000;
+            const qBase = qDom + others;
+            const qInf = qBase * (infRate / 100);
+            
+            // 4. PF
+            let popForPF = (lpcd > 0) ? (qBase * 1000) / lpcd : 0;
+            const pK = popForPF / 1000;
+            let pf = 1.5;
+            if (pK > 0) pf = (18 + Math.sqrt(pK)) / (4 + Math.sqrt(pK));
+
+            // 5. 結果
+            const qDesign = qBase * pf + qInf;
+            globalDesignFlowCMS = qDesign / 86400;
+
+            document.getElementById('calcBaseFlow').innerText = qBase.toLocaleString(undefined, {maximumFractionDigits:2}) + " CMD";
+            document.getElementById('calcInfFlow').innerText = qInf.toLocaleString(undefined, {maximumFractionDigits:2}) + " CMD";
+            document.getElementById('resPF').innerText = pf.toFixed(4);
+            document.getElementById('resQdesign').innerText = qDesign.toLocaleString(undefined, {maximumFractionDigits:2}) + " CMD";
+            document.getElementById('resQdesignCMS').innerText = globalDesignFlowCMS.toFixed(4);
+        }
+
+        // --- TAB 2 邏輯 ---
+        function calculateSinglePipe() {
+            const qVal = parseFloat(document.getElementById('hydQ').value);
+            const qUnit = document.getElementById('hydQUnit').value;
+            const D_mm = parseFloat(document.getElementById('hydD').value);
+            const S_pct = parseFloat(document.getElementById('hydS').value);
+            const n = parseFloat(document.getElementById('hydN').value);
+
+            if(!qVal || !D_mm || !S_pct) return;
+
+            let Q_cms = (qUnit==='CMD') ? qVal/86400 : qVal;
+            let res = solveManning(Q_cms, D_mm/1000, S_pct/100, n);
+
+            const A_full = Math.PI * Math.pow(D_mm/2000, 2);
+            const V_full = (1/n) * Math.pow(D_mm/4000, 2/3) * Math.pow(S_pct/100, 0.5);
+            const Q_full = A_full * V_full;
+
+            document.getElementById('resQfull').innerText = Q_full.toFixed(3) + " CMS";
+            document.getElementById('resVfull').innerText = V_full.toFixed(3) + " m/s";
+            document.getElementById('resRatioQ').innerText = (res.qRatio*100).toFixed(2) + " %";
+            document.getElementById('resRatioH').innerText = res.h.toFixed(3);
+            document.getElementById('resVdesign').innerText = res.v.toFixed(3) + " m/s";
+
+            let msgs = [];
+            let strictH = (D_mm <= 500) ? 0.5 : 0.8;
+            let statusColor = "color:#6BCB77"; // Green
+
+            if (res.status !== "OK") { 
+                msgs.push(res.status); statusColor = "color:#FF6B6B"; 
+            } else {
+                if (res.v < 0.6) { msgs.push("⚠️ 流速過低 (<0.6)"); statusColor = "color:#FFD93D"; }
+                if (res.v > 3.0) { msgs.push("⚠️ 流速過高 (>3.0)"); statusColor = "color:#FFD93D"; }
+                if (res.h > strictH) { msgs.push(`⚠️ 水深比過高 (>${strictH})`); statusColor = "color:#FFD93D"; }
+            }
+            if (msgs.length===0) msgs.push("✅ 符合標準 (OK)");
+            
+            document.getElementById('resStatus').innerHTML = `<strong style="${statusColor}">${msgs.join("<br>")}</strong>`;
+            document.getElementById('hydResultBox').style.display = 'block';
+        }
+
+        // --- TAB 3 邏輯 ---
+        function runQuickCheck() {
+            const qVal = parseFloat(document.getElementById('quickQ').value);
+            const qUnit = document.getElementById('quickQUnit').value;
+            const vMin = parseFloat(document.getElementById('limVmin').value);
+            const vMax = parseFloat(document.getElementById('limVmax').value);
+            const n = parseFloat(document.getElementById('quickN').value) || 0.015;
+
+            if (!qVal) { alert("請輸入設計流量"); return; }
+            let Q = (qUnit==='CMD') ? qVal/86400 : qVal;
+
+            const pipes = [200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000];
+            let tbody = document.getElementById('quickCheckBody');
+            tbody.innerHTML = "";
+            let hasResult = false;
+
+            pipes.forEach(D_mm => {
+                let D = D_mm / 1000;
+                let hMax = (D_mm <= 500) ? 0.5 : 0.8;
+                let validSlopes = [];
+                
+                for (let s_check = 0.0005; s_check <= 0.06; s_check += 0.0005) {
+                    let res = solveManning(Q, D, s_check, n);
+                    if (res.status === "OK") {
+                        if (res.v >= vMin && res.v <= vMax && res.h <= hMax) {
+                            validSlopes.push(s_check);
+                        }
+                    }
+                }
+
+                if (validSlopes.length > 0) {
+                    let minS = Math.min(...validSlopes) * 100;
+                    let maxS = Math.max(...validSlopes) * 100;
+                    let row = `<tr>
+                        <td style="font-weight:800; color:var(--text-title);">${D_mm}</td>
+                        <td style="font-family:'Nunito'; color:var(--color-sage); font-weight:bold;">${minS.toFixed(2)}% ~ ${maxS.toFixed(2)}%</td>
+                        <td><span class="status-badge status-green">OK</span></td>
+                    </tr>`;
+                    tbody.innerHTML += row;
+                    hasResult = true;
+                }
+            });
+
+            if (!hasResult) {
+                tbody.innerHTML = `<tr><td colspan="3" style="color:#999; padding:20px;">無合適管徑，請調整流量或流速限制。</td></tr>`;
+            }
+            document.getElementById('quickCheckResult').style.display = 'block';
+        }
+
+        // 監聽面積輸入 (即時更新人口顯示)
+        ['resArea', 'resDensity', 'comArea', 'comDensity'].forEach(id => {
+            document.getElementById(id).addEventListener('input', function() {
+                if (document.querySelector('input[name="popMode"]:checked').value === 'density') {
+                    const resA = parseFloat(document.getElementById('resArea').value) || 0;
+                    const resD = parseFloat(document.getElementById('resDensity').value) || 0;
+                    const comA = parseFloat(document.getElementById('comArea').value) || 0;
+                    const comD = parseFloat(document.getElementById('comDensity').value) || 0;
+                    const pop = (resA * resD) + (comA * comD);
+                    document.getElementById('calcPopResult').innerText = pop.toLocaleString();
+                }
+            });
+        });
     </script>
 
 </body>
 </html>
-
-
-
