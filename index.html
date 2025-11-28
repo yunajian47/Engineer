@@ -33,7 +33,7 @@
             --color-note: #FEFBEA;       /* 筆記底色 */
             --color-risk: #FFF0F3;       /* 風險底色 */
             
-            --text-main: #5C5C5C;        
+            --text-main: #4A4A4A;        /* 加深文字顏色以提升對比 */
             --text-title: #2D2D2D;       
             
             --shadow-soft: 0 10px 40px -10px rgba(229, 152, 155, 0.25);
@@ -276,15 +276,91 @@
         .inner-tab-content { display: none; animation: fadeIn 0.4s ease; }
         .inner-tab-content.active { display: block; }
 
-        /* Markdown 容器樣式 */
-        #markdown-container { background: white; padding: 3rem; border-radius: var(--radius-bubble); box-shadow: 0 5px 30px rgba(0,0,0,0.02); margin-top: 1rem; }
-        #markdown-container h1 { color: var(--text-title); font-size: 2rem; margin-bottom: 1.5rem; border-bottom: 2px solid var(--color-rose-light); padding-bottom: 10px; }
-        #markdown-container h2 { color: var(--color-rose); margin-top: 2rem; margin-bottom: 1rem; font-family: 'DM Serif Display'; font-size: 1.8rem; }
-        #markdown-container h3 { color: var(--color-sand); margin-top: 1.5rem; font-size: 1.3rem; border-left: 4px solid var(--color-sand); padding-left: 10px; }
-        #markdown-container p { line-height: 1.8; margin-bottom: 1rem; }
-        #markdown-container img { max-width: 100%; border-radius: 12px; margin: 1rem 0; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        #markdown-container ul { padding-left: 1.5rem; margin-bottom: 1rem; }
-        #markdown-container a { color: var(--color-sage); font-weight: bold; text-decoration: none; border-bottom: 1px dashed var(--color-sage); }
+        /* --- ★★★ Markdown 優化與側邊目錄樣式 (MD Styles) ★★★ --- */
+        #markdown-container { 
+            background: white; padding: 0; /* 移除 padding，由內部 layout 控制 */
+            border-radius: var(--radius-bubble); box-shadow: 0 5px 30px rgba(0,0,0,0.02); margin-top: 1rem; 
+            overflow: hidden; /* 防止內容溢出圓角 */
+        }
+
+        .md-layout {
+            display: flex;
+            align-items: flex-start;
+            gap: 40px;
+            padding: 3rem 4rem; /* 恢復 padding */
+        }
+
+        /* 內文區域 */
+        .md-content {
+            flex: 1;
+            min-width: 0; /* 防止 grid/flex 子元素溢出 */
+            font-size: 1.15rem; /* 加大字體 */
+            line-height: 1.9;
+            color: #333;
+        }
+
+        .md-content h1 { color: var(--text-title); font-size: 2.4rem; margin-top: 1rem; margin-bottom: 1.5rem; border-bottom: 3px solid var(--color-rose-light); padding-bottom: 15px; font-family: 'DM Serif Display'; }
+        .md-content h2 { color: var(--color-rose); font-size: 1.8rem; margin-top: 3rem; margin-bottom: 1.2rem; font-weight: 700; position: relative; padding-left: 15px; }
+        .md-content h2::before { content: ''; position: absolute; left: 0; top: 5px; bottom: 5px; width: 5px; background: var(--color-rose); border-radius: 5px; }
+        .md-content h3 { color: var(--color-sand); font-size: 1.4rem; margin-top: 2.5rem; margin-bottom: 1rem; border-left: none; padding-left: 0; display: flex; align-items: center; }
+        .md-content h3::before { content: '■'; font-size: 0.8em; margin-right: 10px; color: var(--color-sand-light); background: var(--color-sand); -webkit-background-clip: text; color: transparent; background-clip: text; }
+        
+        .md-content p { margin-bottom: 1.2rem; text-align: justify; }
+        
+        /* 圖片優化：限制大小、置中 */
+        .md-content img { 
+            display: block; 
+            margin: 2rem auto; 
+            max-width: 100%; 
+            max-height: 600px; /* 限制最大高度，避免圖片過長 */
+            object-fit: contain; /* 保持比例 */
+            border-radius: 12px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08); 
+            border: 1px solid #F5F5F5;
+        }
+
+        .md-content ul, .md-content ol { padding-left: 1.5rem; margin-bottom: 1.5rem; }
+        .md-content li { margin-bottom: 0.5rem; }
+        
+        .md-content blockquote {
+            background: var(--color-note);
+            border-left: 6px solid var(--color-sand);
+            margin: 2rem 0;
+            padding: 1.5rem 2rem;
+            border-radius: 0 12px 12px 0;
+            font-style: italic;
+            color: #555;
+        }
+
+        .md-content code { background: #F3F4F6; padding: 2px 6px; border-radius: 4px; font-family: monospace; color: #D63384; font-size: 0.95em; }
+        .md-content pre { background: #2D2D2D; color: #FFF; padding: 1.5rem; border-radius: 12px; overflow-x: auto; margin: 1.5rem 0; }
+        .md-content pre code { background: transparent; color: inherit; padding: 0; }
+
+        .md-content table { width: 100%; border-collapse: collapse; margin: 2rem 0; font-size: 1rem; }
+        .md-content th { background: #FAFAFA; border-bottom: 2px solid var(--color-sage); padding: 12px 15px; text-align: left; color: var(--color-sage); font-weight: 800; }
+        .md-content td { padding: 12px 15px; border-bottom: 1px solid #EEE; }
+        .md-content tr:nth-child(even) { background-color: #FBFCFD; }
+
+        /* 側邊目錄 (Sticky Sidebar) */
+        .md-toc {
+            width: 240px;
+            position: sticky;
+            top: 100px; /* 距離頂部 */
+            max-height: calc(100vh - 150px);
+            overflow-y: auto;
+            border-left: 2px solid #F0F0F0;
+            padding-left: 20px;
+            flex-shrink: 0;
+        }
+        .md-toc h4 { color: #BBB; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; margin-top: 0; }
+        .toc-list { list-style: none; padding: 0; margin: 0; }
+        .toc-item { margin-bottom: 8px; font-size: 0.95rem; line-height: 1.4; }
+        .toc-link { color: #888; text-decoration: none; display: block; transition: 0.2s; padding: 2px 0; }
+        .toc-link:hover { color: var(--color-rose); transform: translateX(5px); }
+        .toc-link.active { color: var(--color-rose); font-weight: 700; border-left: 2px solid var(--color-rose); padding-left: 10px; margin-left: -22px; }
+        
+        .toc-h2 { margin-left: 0; font-weight: 600; }
+        .toc-h3 { margin-left: 15px; font-size: 0.9rem; }
 
 
         /* --- ★★★ 計算機專用樣式補丁 ★★★ --- */
@@ -342,6 +418,10 @@
             
             h1 { font-size: 2.5rem; margin-top: 3rem; }
             h3 { margin-top: 2.5rem; font-size: 1.3rem; }
+            
+            /* Markdown Mobile: 隱藏目錄，內文佔滿 */
+            .md-layout { flex-direction: column; padding: 2rem 1.5rem; }
+            .md-toc { display: none; }
             
             /* Tab 在手機上改為區塊顯示 */
             .tab-nav { flex-direction: row; gap: 5px; border-bottom: none; overflow-x: auto; -webkit-overflow-scrolling: touch; }
@@ -994,7 +1074,7 @@
                     // 自動補上路徑前綴
                     href = 'notes/所有圖片/' + href;
                 }
-                return `<img src="${href}" alt="${text}" style="max-width:100%; border-radius:12px; box-shadow:0 5px 15px rgba(0,0,0,0.1);">`;
+                return `<img src="${href}" alt="${text}">`;
             }
         };
         // 啟用自定義渲染器
@@ -1152,17 +1232,75 @@
                     return response.text();
                 })
                 .then(text => {
+                    // 修復 Obsidian 圖片語法
                     text = text.replace(/!\[\[([^|\]]+)(?:\|[^\]]*)?\]\]/g, (match, filename) => {
-                        return `<img src="notes/所有圖片/${filename}" alt="${filename}" style="max-width:100%; border-radius:12px; margin: 1rem 0; box-shadow:0 5px 15px rgba(0,0,0,0.1);">`;
+                        return `<img src="notes/所有圖片/${filename}" alt="${filename}">`;
                     });
 
-                    container.innerHTML = marked.parse(text);
+                    // 解析 Markdown
+                    let parsedHTML = marked.parse(text);
+
+                    // 構建 Layout (內容 + TOC)
+                    container.innerHTML = `
+                        <div class="md-layout">
+                            <div class="md-content" id="md-content-body">${parsedHTML}</div>
+                            <div class="md-toc">
+                                <h4>Table of Contents</h4>
+                                <ul class="toc-list" id="toc-list"></ul>
+                            </div>
+                        </div>
+                    `;
+
+                    // 自動生成目錄
+                    generateTOC();
+
                     if(window.MathJax) MathJax.typesetPromise([container]);
                 })
                 .catch(err => {
                     console.error(err);
                     container.innerHTML = `<p style="color:red;">讀取失敗：無法載入 <b>${filename}</b><br>請確認檔案是否已放入【notes】資料夾中。</p>`;
                 });
+        }
+
+        // ★★★ 自動生成目錄函式 ★★★
+        function generateTOC() {
+            const content = document.getElementById('md-content-body');
+            const tocList = document.getElementById('toc-list');
+            const headers = content.querySelectorAll('h1, h2, h3');
+
+            if (headers.length === 0) {
+                document.querySelector('.md-toc').style.display = 'none';
+                return;
+            }
+
+            headers.forEach((header, index) => {
+                // 自動賦予 ID
+                if (!header.id) header.id = 'header-' + index;
+
+                const li = document.createElement('li');
+                li.className = 'toc-item';
+                
+                // 根據層級縮排
+                if (header.tagName === 'H2') li.classList.add('toc-h2');
+                if (header.tagName === 'H3') li.classList.add('toc-h3');
+
+                const link = document.createElement('a');
+                link.className = 'toc-link';
+                link.href = '#' + header.id;
+                link.innerText = header.innerText;
+                
+                // 平滑滾動
+                link.onclick = (e) => {
+                    e.preventDefault();
+                    header.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    // 更新 Active 狀態
+                    document.querySelectorAll('.toc-link').forEach(el => el.classList.remove('active'));
+                    link.classList.add('active');
+                };
+
+                li.appendChild(link);
+                tocList.appendChild(li);
+            });
         }
 
 
