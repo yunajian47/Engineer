@@ -923,11 +923,15 @@
         }
 
         // ==========================================
-        // ★★★ 核心：讀取並轉換 Markdown (已修復 Obsidian 格式) ★★★
+        // ★★★ 核心：讀取並轉換 Markdown (已修復 Obsidian 格式 + 檔案路徑編碼) ★★★
         // ==========================================
         function loadMarkdown(filename, btnElement) {
             const container = document.getElementById('markdown-container');
-            const path = './notes/' + filename; 
+            
+            // ★關鍵修正★：先組字串，再進行 URL 編碼
+            // 這會把 "CODiS 氣候觀測.md" 轉換成 "CODiS%20%E6%B0..."，讓 fetch 能正確抓到檔案
+            const rawPath = './notes/' + filename; 
+            const encodedPath = encodeURI(rawPath);
 
             if(btnElement) {
                 document.querySelectorAll('#view-tools .tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -936,16 +940,13 @@
 
             container.innerHTML = '<div style="text-align:center; padding:2rem; color:#aaa;"><i class="fa-solid fa-spinner fa-spin"></i> Loading content...</div>';
 
-            fetch(path)
+            fetch(encodedPath)
                 .then(response => {
                     if (!response.ok) throw new Error("找不到檔案");
                     return response.text();
                 })
                 .then(text => {
-                    // ★關鍵修正★：針對 Obsidian 的 ![[...]] 格式進行處理
-                    // 1. 抓出檔名
-                    // 2. 進行 encodeURI 編碼 (解決空格和中文問題)
-                    // 3. 轉成標準 Markdown ![](...)
+                    // ★關鍵修正★：針對 Obsidian 的 ![[...]] 格式進行處理 (圖片路徑修復)
                     text = text.replace(/!\[\[(.*?)\]\]/g, (match, filename) => {
                         const cleanName = filename.split('/').pop();
                         const encodedName = encodeURI(cleanName);
