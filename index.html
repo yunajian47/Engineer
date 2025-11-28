@@ -189,12 +189,12 @@
         .styled-table th, .styled-table td { padding: 18px 25px; border-bottom: 1px solid #EEE; text-align: left; vertical-align: middle; }
         .styled-table th { background: #FAFAFA; color: var(--color-sage); font-weight: 800; border-bottom: 2px solid var(--color-sage); white-space: nowrap; }
         .styled-table tr:last-child td { border-bottom: none; }
-        .geo-badge { display: inline-block; padding: 5px 12px; border-radius: 8px; color: white; font-weight: 800; font-size: 0.85rem; min-width: 80px; text-align: center; }
+        .geo-badge { display: inline-block; padding: 5px 12px; border-radius: 8px; color: white; font-weight: 800; font-size: 0.85rem; min-width: 80px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 
         h3 { font-size: 1.5rem; color: var(--color-sand); margin-top: 3.5rem; margin-bottom: 1.5rem; border-left: 6px solid #FFE5D9; padding-left: 1rem; font-weight: 800; line-height: 1.3; }
         h4 { font-size: 1.2rem; color: var(--color-rose); margin-top: 1.5rem; margin-bottom: 1rem; font-weight: 700; display: flex; align-items: center; }
         
-        .math-box { background: #F9FAFB; padding: 2rem; border-radius: 16px; margin: 1.5rem 0; border: 1px dashed #DDD; text-align: center; font-size: 1.15rem; overflow-x: auto; }
+        .math-box { background: #F9FAFB; padding: 2rem; border-radius: 16px; margin: 1.5rem 0; border: 1px dashed #DDD; text-align: center; font-size: 1.15rem; overflow-x: auto; box-shadow: inset 0 2px 5px rgba(0,0,0,0.02); }
 
         /* Links & Modal */
         .def-link { color: var(--color-rose); font-weight: 700; cursor: pointer; border-bottom: 1px dashed var(--color-rose); transition: all 0.2s; position: relative; padding-bottom: 1px; }
@@ -622,6 +622,7 @@
                 <div class="chapter-header"><div style="font-size:1.8rem; font-weight:700; font-family:'DM Serif Display';">上位計畫體系與發包決策</div></div>
                 <div class="chapter-body">
                     <p>工程的成敗，往往在「開工前」就決定了。依據<strong>《下水道法》</strong>，建設具有嚴格的法定程序。</p>
+                    
                     <h3>1.1 上位計畫的層級體系</h3>
                     <div class="note-box">
                         <h4>層級一：<span class="def-link" onclick="openDef('masterplan')">污水下水道系統規劃</span> (Master Plan)</h4>
@@ -629,11 +630,18 @@
                         <p><strong>2. 規劃目標年 (Target Year)：</strong>通常設定為 <span style="font-weight:700; color:var(--text-title);">20~30 年</span>。考量土木設施耐用年數約 50 年，且管線埋設後擴建困難，長期規劃可避免管徑設計過小。</p>
                         <p><strong>3. 系統邊界：</strong>需依效益劃分「公共下水道」(人口密集)、「專用下水道」與「建築物污水處理設施」(分散聚落)。</p>
                         <hr style="border:0; border-top:1px dashed #ddd; margin:20px 0;">
+                        
                         <h4>層級二：<span class="def-link" onclick="openDef('implplan')">實施計畫</span> (Implementation Plan)</h4>
                         <p><strong>1. 行政定位：</strong>爭取中央補助的請款依據。需核定後據以實施。</p>
                         <p><strong>2. 分期建設原則：</strong>為達經濟效益與配合預算：<br>• 大規模 (>30,000 CMD)：原則分三期。<br>• 中規模 (10,000~30,000 CMD)：原則分二期。</p>
                         <p><strong>3. 風險管控：</strong>設計時需檢討原規劃，考量人口變化，以免設施不經濟。</p>
+                        <hr style="border:0; border-top:1px dashed #ddd; margin:20px 0;">
+                        
+                        <h4>層級三：實質設計 (Design Project)</h4>
+                        <p><strong>1. 任務：</strong>將規劃概念確定化。產出契約、規範、計算書、預算書及招標文件。</p>
+                        <p><strong>2. 檢核點 (KPI)：</strong>用戶接管設計戶數與管線長度。</p>
                     </div>
+
                     <h3>1.2 勞務採購策略：為何採用 <span class="def-link" onclick="openDef('ds')">D&S (設計監造合併)</span>？</h3>
                     <div class="risk-box" style="background:var(--color-sage-light); border-color:#CCFBF1;">
                         <span style="font-weight:700; color:var(--color-sage); display:block; margin-bottom:10px; font-size:1.1rem;">論述一：解決「地下工程不可預見性」的責任歸屬</span>
@@ -643,6 +651,21 @@
                             <li><strong>• 快速變更：</strong>合併招標能依據試挖成果，快速修正管線配置。</li>
                         </ul>
                     </div>
+                    
+                    <div class="risk-box" style="background:var(--color-sage-light); border-color:#CCFBF1;">
+                        <span style="font-weight:700; color:var(--color-sage); display:block; margin-bottom:10px; font-size:1.1rem;">論述二：確保「行政調查資料」的連續性</span>
+                        <ul style="list-style:none; padding-left:0; margin:0;">
+                            <li style="margin-bottom:8px;"><strong>• 繁重行政：</strong>包含路權申請、交維計畫送審。</li>
+                            <li><strong>• <span class="def-link" onclick="openDef('neighbor')">鄰房鑑定</span>：</strong>施工前現況調查資料，對後續處理損鄰糾紛至關重要，必須無縫移交。</li>
+                        </ul>
+                    </div>
+
+                    <h3>1.3 施工標發包策略</h3>
+                    <ul style="list-style:none; padding-left:10px;">
+                        <li style="margin-bottom:1rem;"><strong>① 工項整合：</strong>推進與接管合併 (D標策略)。避免界面打架。</li>
+                        <li style="margin-bottom:1rem;"><strong>② 水系完整：</strong>依「集污分區」切割，確保功能獨立性。</li>
+                        <li style="margin-bottom:1rem;"><strong>③ 先易後難：</strong>先做人口密集區 (如二王重劃區)，提高CP值。</li>
+                    </ul>
                 </div>
             </article>
         </section>
@@ -663,8 +686,22 @@
                         <table class="styled-table">
                             <thead><tr><th>項目</th><th>執行方式 / 風險</th></tr></thead>
                             <tbody>
-                                <tr><td>地下管線</td><td>發文調閱 + 協調會 + <strong>現場試挖</strong>。</td></tr>
+                                <tr><td>地下管線</td><td>發文調閱 + 協調會 + <strong>現場試挖</strong>。<br>避讓特高壓電、輸油管；雨水箱涵採下方穿越。</td></tr>
                                 <tr><td>地質條件</td><td>現地鑽探 (D標共30孔)。<span class="def-link" onclick="openDef('nvalue')">N值</span>決定工法。</td></tr>
+                                <tr><td>地形測量</td><td>誤差10cm可能導致逆坡。需引測國家控制點。</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <h3>2.2 地質判讀 (N值對照表)</h3>
+                    <div class="table-container">
+                        <table class="styled-table">
+                            <thead><tr><th width="100">N值</th><th>地層特性 & SOP</th></tr></thead>
+                            <tbody>
+                                <tr><td><span class="geo-badge" style="background:#FF6B6B">0 ~ 4</span></td><td><strong>極鬆散 (<span class="def-link" onclick="openDef('quicksand')">流砂</span>)：</strong>井底需地盤改良。嚴禁開放式挖掘。</td></tr>
+                                <tr><td><span class="geo-badge" style="background:#FFD93D; color:#555">4 ~ 10</span></td><td><strong>軟弱 (黏土)：</strong>需同步<span class="def-link" onclick="openDef('backfill')">背填灌漿</span>，添加分散劑防結泥。</td></tr>
+                                <tr><td><span class="geo-badge" style="background:#6BCB77">10 ~ 30</span></td><td><strong>中度緊密：</strong>甜蜜點 (Sweet Spot)。<span class="def-link" onclick="openDef('epb')">土壓平衡式 (EPB)</span> 最佳。</td></tr>
+                                <tr><td><span class="geo-badge" style="background:#6D6875"> > 50</span></td><td><strong><span class="def-link" onclick="openDef('gravel')">卵礫石</span>：</strong>易卡機。需選用滾刀機頭，推薦<span class="def-link" onclick="openDef('mud')">泥濃式</span>工法。</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -682,17 +719,66 @@
                     <div style="font-size:1.8rem; font-weight:700; font-family:'DM Serif Display'; color:#D4A373;">設計準則與技術決策</div>
                 </div>
                 <div class="chapter-body">
-                    <p>核心在於「正確預估流量」並「提供安全輸送能力」。</p>
-                    <h3>3.1 流量與水力設計</h3>
+                    <p>核心在於「正確預估流量」並「提供安全輸送能力」。這不僅是套用公式，而是對每一個參數進行風險評估後的決策。</p>
+                    
+                    <h3>3.1 流量與水力設計：參數選定</h3>
                     <p>依據《下水道系統設計及解說》，必須以<strong><span class="def-link" onclick="openDef('qmax')">計畫最大日污水量 ($Q_{max}$)</span></strong> 作為設計基礎。</p>
-                    <div class="math-box">$$Q_{max} = Q_{avg} \times PF + Q_{inf}$$</div>
+                    <div class="math-box">
+                        $$Q_{max} = Q_{avg} \times PF + Q_{inf}$$
+                        $$Q_{max} = (\text{計畫人口} \times \text{單位污水量}) \times \text{尖峰係數} + \text{地下水入滲量}$$
+                    </div>
                     <div class="note-box">
                         <h4>1. 計畫人口 ($P$)</h4>
-                        <p>不能僅看現況，需依都市計畫飽和密度推估。</p>
+                        <p>不能僅看現況，需依都市計畫飽和密度推估。本案數據：六甲頂 260 人/公頃。</p>
                         <hr style="border:0; border-top:1px dashed #ddd; margin:15px 0;">
+                        
                         <h4>2. <span class="def-link" onclick="openDef('lpcd')">單位污水量 ($q$)</span></h4>
                         <p>$250 \text{ (LPCD)} \times 0.9 \text{ (轉換率)} = \mathbf{225 \text{ LPCD}}$</p>
+                        <hr style="border:0; border-top:1px dashed #ddd; margin:15px 0;">
+                        
+                        <h4>3. <span class="def-link" onclick="openDef('pf')">尖峰係數 ($PF$)</span></h4>
+                        <p>設計用「平均流量的 2~4 倍」來應付早晚尖峰，防止滿管回冒。</p>
+                        <hr style="border:0; border-top:1px dashed #ddd; margin:15px 0;">
+                        
+                        <h4>4. 地下水入滲量 ($Q_{inf}$)</h4>
+                        <p><span style="color:var(--color-rose); font-weight:700;">採高標 15%</span>。因本區地下水位極高，需預留安全裕度。</p>
                     </div>
+
+                    <h3>3.1.2 <span class="def-link" onclick="openDef('manning')">曼寧公式</span> ($n$值) 實務校正</h3>
+                    <div class="table-container">
+                        <table class="styled-table">
+                            <thead><tr><th>管材</th><th>理論值</th><th>本案設計值</th></tr></thead>
+                            <tbody>
+                                <tr><td><span class="def-link" onclick="openDef('rcp')">RCP (鋼筋混凝土)</span></td><td>0.013</td><td><strong>0.015</strong></td></tr>
+                                <tr><td><span class="def-link" onclick="openDef('prcp')">PRCP (樹脂混凝土)</span></td><td>0.011</td><td><strong>0.014</strong></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p style="color:#888; font-size:0.9rem; margin-top:0.5rem;">*理由：考慮施工誤差、生物膜(Slime)及泥沙沉積。</p>
+
+                    <h3>3.2 工法選擇決策矩陣</h3>
+                    <div class="table-container">
+                        <table class="styled-table">
+                            <thead><tr><th width="20%">評估因子</th><th>明挖工法</th><th>推進工法</th></tr></thead>
+                            <tbody>
+                                <tr><td><strong>埋設深度</strong></td><td>淺埋 ($< 2.5\sim 3.0\text{m}$)</td><td>深埋 ($\ge 2.5\sim 3.0\text{m}$)</td></tr>
+                                <tr><td><strong>交通影響</strong></td><td>高</td><td>低</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="risk-box">
+                        <span style="font-weight:800; color:var(--color-rose); font-size:1.1rem; display:block; margin-bottom:10px;">★ 推進機頭選型關鍵</span>
+                        <p><strong>1. 卵礫石層：</strong>唯一推薦 <span style="background:#FFCDB2; padding:0 5px;">泥濃式</span>。需配備破碎滾刀。</p>
+                        <p><strong>2. 流砂/高地下水：</strong>推薦泥水式或土壓平衡式。</p>
+                        <p><strong>3. 軟弱黏土：</strong>採 EPB 並注入分散劑，防止<span class="def-link" onclick="openDef('clogging')">鏡面效應</span>。</p>
+                    </div>
+
+                    <h3>3.3 管材選用原則</h3>
+                    <ul style="list-style:none; padding-left:0;">
+                        <li style="margin-bottom:1.5rem;"><strong>選項一：PRCP</strong> <span style="background:#E8F5E9; color:#4CAF50; font-size:0.8rem; padding:2px 8px; border-radius:4px;">本案首選</span><br>抗壓強、表面滑、耐腐蝕。</li>
+                        <li style="margin-bottom:1.5rem;"><strong>選項二：RCP</strong><br>需達 Class 4 強度。缺點是重、易腐蝕。</li>
+                        <li style="margin-bottom:1.5rem;"><strong>明挖管材：</strong><span class="def-link" onclick="openDef('flexible')">柔性管 (PVC/HDPE)</span>。<br>利用<span class="def-link" onclick="openDef('soilpipe')">管-土互制作用</span>承受載重。</li>
+                    </ul>
                 </div>
             </article>
         </section>
@@ -707,20 +793,73 @@
                     <div style="font-size:1.8rem; font-weight:700; font-family:'DM Serif Display'; color:#2D2D2D;">施工方案與障礙排除</div>
                 </div>
                 <div class="chapter-body">
+                    <p>如果說設計是「紙上談兵」，施工就是「短兵相接」。必須在「地下管線叢林」與「地面車流」夾縫中求生存。</p>
                     <div class="tab-nav">
                         <button class="tab-btn active" onclick="switchInnerTab('p4-tab1', this)">管線障礙</button>
                         <button class="tab-btn" onclick="switchInnerTab('p4-tab2', this)">交通維持</button>
+                        <button class="tab-btn" onclick="switchInnerTab('p4-tab3', this)">監測保護</button>
                     </div>
+                    
                     <div id="p4-tab1" class="inner-tab-content active">
-                        <h3>4.1 地下管線障礙處理</h3>
+                        <h3>4.1 地下管線障礙處理：立體空間的博弈</h3>
                         <div class="note-box" style="border-left-color:#5C5C5C;">
-                            <h4>4.1.1 管線衝突處理原則</h4>
-                            <p><strong>第一級：不可遷移</strong> - 重力流管線(雨水箱涵)、特高壓電。</p>
+                            <h4>4.1.1 管線衝突處理原則 (Hierarchy of Rights)</h4>
+                            <p><strong>第一級：不可遷移</strong><br>• <strong><span class="def-link" onclick="openDef('gravity')">重力流管線</span> (雨水箱涵)</strong>：重力流無法爬坡。<br>• <strong>特高壓電 (161kV)</strong>：遷移成本天價。<br><span style="font-weight:700; color:var(--color-rose);">對策：污水管必須閃避。</span></p>
+                            <hr style="border:0; border-top:1px dashed #ddd; margin:15px 0;">
+                            <p><strong>第二級：困難遷移</strong><br>大口徑自來水幹管 (>500mm)、主要電信幹管。原則閃避。</p>
+                        </div>
+                        <h4>4.1.2 障礙處理三大戰術</h4>
+                        <ul style="list-style:none; padding-left:0;">
+                            <li style="margin-bottom:1.5rem;"><strong>戰術一：閃避 (Avoidance)</strong><br>平面調整工作井位置；或立體調整壓低高程。</li>
+                            <li style="margin-bottom:1.5rem;"><strong>戰術二：穿越 (Crossing)</strong><br>原則採<strong>「下方穿越」</strong>。<span class="def-link" onclick="openDef('clearance')">安全淨距</span>需 $\ge 30\sim 50\text{cm}$。<span class="def-link" onclick="openDef('siphon')">倒虹吸</span>為下下策。</li>
+                            <li style="margin-bottom:1.5rem;"><strong>戰術三：保護 (Protection)</strong><br>進行<span class="def-link" onclick="openDef('trialpit')">試挖</span>驗證高程。</li>
+                        </ul>
+                    </div>
+
+                    <div id="p4-tab2" class="inner-tab-content">
+                        <h3>4.2 交通維持計畫 (Traffic Management)</h3>
+                        <p>需依據<span class="def-link" onclick="openDef('los')">道路服務水準 (LOS)</span> 決策。</p>
+                        <h4>4.2.1 工區分級與標準佈設</h4>
+                        <div class="table-container">
+                            <table class="styled-table">
+                                <thead><tr><th>分級</th><th>情境</th><th>佈設重點</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Type I</strong></td><td>路側施工</td><td>引導機慢車靠左。</td></tr>
+                                    <tr><td><strong>Type II</strong></td><td>封閉一車道</td><td>設置<strong><span class="def-link" onclick="openDef('taper')">漸變段</span></strong> (Taper) 引導車流。</td></tr>
+                                    <tr><td><strong>Type III</strong></td><td>道路中心</td><td>雙邊通車。</td></tr>
+                                    <tr><td><strong>Type IV</strong></td><td>路口施工</td><td>檢核大車轉彎半徑。</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="note-box">
+                            <h4>4.2.2 施工時間策略</h4>
+                            <p><strong>• 策略一：日間施工 (標準模式)</strong><br>適用絕大多數道路。</p>
+                            <p><strong>• 策略二：夜間施工 (例外模式)</strong><br>適用台1線等要道。採<strong>「修補式施工」</strong>：22:00 開挖 → 06:00 蓋上<span class="def-link" onclick="openDef('deck')">覆工板</span>。</p>
                         </div>
                     </div>
-                    <div id="p4-tab2" class="inner-tab-content">
-                        <h3>4.2 交通維持計畫</h3>
-                        <p>需依據<span class="def-link" onclick="openDef('los')">道路服務水準 (LOS)</span> 決策。</p>
+
+                    <div id="p4-tab3" class="inner-tab-content">
+                        <h3>4.3 損鄰防治與監測</h3>
+                        <div class="risk-box" style="background:white; border:1px solid #EEE;">
+                            <h4>4.3.1 現況鑑定 (工程師的保命符)</h4>
+                            <p>施工前需針對開挖深度 1.5 倍範圍內建物，委託公會拍照存證。</p>
+                        </div>
+                        <h4>4.3.2 監測儀器佈設</h4>
+                        <ul style="list-style:none; padding-left:0;">
+                            <li>• <strong><span class="def-link" onclick="openDef('tilt')">傾度盤</span></strong>：安裝於建物柱子。</li>
+                            <li>• <strong>沉陷觀測點</strong>：監控地面槽形沉陷。</li>
+                        </ul>
+                        <h4>4.3.3 監測管理紅綠燈</h4>
+                        <div class="table-container">
+                            <table class="styled-table">
+                                <thead><tr><th>等級</th><th>數值範例</th><th>行動對策</th></tr></thead>
+                                <tbody>
+                                    <tr><td><span class="status-badge status-green">管理值</span></td><td>$\le 2.8\text{cm}$</td><td>安全範圍。</td></tr>
+                                    <tr><td><span class="status-badge status-yellow">警戒值</span></td><td>$2.8 \sim 3.6\text{cm}$</td><td>加密監測 (每日2次)。</td></tr>
+                                    <tr><td><span class="status-badge status-red">行動值</span></td><td>$> 4.0\text{cm}$</td><td><strong>立即停工</strong>。</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </article>
@@ -731,14 +870,62 @@
                 <div style="font-size:0.9rem; color:#84A98C; font-weight:700; margin-bottom:10px; letter-spacing:1px;">LEARNING MODULE</div>
                 <h1>Phase 05: <br><span style="color:#84A98C;">Sustainability</span></h1>
             </header>
+
             <article>
                 <div class="chapter-header" style="background:#F0FDF4; border-bottom:1px dashed #BBF7D0;">
                     <div style="font-size:1.8rem; font-weight:700; font-family:'DM Serif Display'; color:#355E3B;">環境保護與節能減碳</div>
                 </div>
                 <div class="chapter-body">
-                    <p>在 ESG 指標納入評估後，環保已是核心價值。</p>
-                    <h3>5.1 生態檢核</h3>
+                    <p>在 ESG 指標納入評估後，環保已是核心價值。本章探討<span class="def-link" onclick="openDef('ecocheck')">生態檢核</span>與全生命週期減碳。</p>
+
+                    <h3>5.1 生態檢核：工程與環境的對話</h3>
                     <p>依據「公共工程生態檢核注意事項」，執行標準化決策流程。</p>
+                    
+                    <div class="note-box" style="border-left-color:#84A98C; background:#F7FDF9;">
+                        <h4>步驟一：資料蒐集 (Inventory)</h4>
+                        <p>• <strong>指認紅區：</strong>本案全數位於都市計畫區既有道路，屬「一般區」。<br>
+                        • <strong>文化資產：</strong>指認出「原台南農校日式宿舍群」及「網寮疑似遺址」，列為保全對象。</p>
+                    </div>
+
+                    <h4>步驟三：保育對策研擬 (四層級)</h4>
+                    <div class="table-container">
+                        <table class="styled-table">
+                            <thead><tr><th width="20%">策略</th><th>定義</th><th>本案應用</th></tr></thead>
+                            <tbody>
+                                <tr><td><strong>1. 迴避 (Avoid)</strong></td><td>更改路線避開敏感區。</td><td>管線繞道避開遺址核心區。</td></tr>
+                                <tr><td><strong>2. 縮小 (Minimize)</strong></td><td>縮減工程規模。</td><td>採<span class="def-link" onclick="openDef('microtunnel')">微型推進</span>，減少工作井開挖。</td></tr>
+                                <tr><td><strong>3. 減輕 (Mitigate)</strong></td><td>降低衝擊程度。</td><td>設置隔音牆、低震動機具。</td></tr>
+                                <tr><td><strong>4. 補償 (Compensate)</strong></td><td>異地重建或復育。</td><td>行道樹補植。</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3>5.2 節能減碳策略：淨零排放實踐</h3>
+                    <p>依據《基本設計報告》，減碳需從設計源頭做起。</p>
+
+                    <h4>5.2.1 設計面：決定 70% 碳排</h4>
+                    <div class="risk-box" style="background:#F0FDF4; border-color:#86EFAC;">
+                        <span style="font-weight:700; color:#15803D; font-size:1.1rem; display:block; margin-bottom:5px;">策略一：重力流優先 (Gravity Flow)</span>
+                        <p>減少中繼揚水站設置。雖然增加埋深，但從<span class="def-link" onclick="openDef('lcc')">全生命週期成本 (LCC)</span> 來看，減少 50 年電力消耗更減碳。</p>
+                    </div>
+                    <div class="risk-box" style="background:#F0FDF4; border-color:#86EFAC;">
+                        <span style="font-weight:700; color:#15803D; font-size:1.1rem; display:block; margin-bottom:5px;">策略二：長距離推進</span>
+                        <p>將井距提升至 100~120m。少挖一個井 = 少 200m³ 土方開挖 + 少混凝土底版。</p>
+                    </div>
+
+                    <h4>5.2.2 材料面：循環經濟</h4>
+                    <ul style="list-style:none; padding-left:0;">
+                        <li style="margin-bottom:1rem;"><strong>• 耐久性管材：</strong>選用 PRCP (壽命50年)，避免二次開挖更換，就是最環保。</li>
+                        <li style="margin-bottom:1rem;"><strong>• 再生粒料：</strong>管溝回填材料 <span class="def-link" onclick="openDef('clsm')">CLSM</span> 需摻配焚化底渣，解決廢棄物去化。</li>
+                    </ul>
+
+                    <h4>5.2.3 施工面：能源管理</h4>
+                    <ul style="list-style:none; padding-left:0;">
+                        <li><strong>• 土方挖填平衡：</strong>工區內設置暫置場，A區良質土直接運至B區回填，減少砂石車油耗。</li>
+                        <li><strong>• 市電取代發電機：</strong>工地優先申請臨時接電，減少柴油污染。</li>
+                        <li><strong>• 鋼材循環：</strong>擋土設施全數租賃，完工回收再利用 (<span class="def-link" onclick="openDef('circular')">循環經濟</span>)。</li>
+                    </ul>
+
                 </div>
             </article>
         </section>
@@ -1065,43 +1252,43 @@
 
     // 導航與功能
     const glossary = {
-        "masterplan": { title: "污水下水道系統規劃 (Master Plan)", desc: "都市污水處理的最高指導原則與長期願景..." },
-        "implplan": { title: "實施計畫 (Implementation Plan)", desc: "依據系統規劃制定的具體執行方案..." },
-        "ds": { title: "設計監造合併", desc: "將設計與監造工作委託給同一家廠商..." },
-        "trialpit": { title: "試挖 (Trial Pit)", desc: "在工程設計或開工前，於預定路徑上挖掘小坑洞..." },
-        "gis": { title: "GIS (地理資訊系統)", desc: "Geographic Information System..." },
-        "neighbor": { title: "鄰房鑑定", desc: "施工前委託公正第三方（如公會）對沿線建築物進行現況調查..." },
-        "nvalue": { title: "N值 (Standard Penetration Test N-Value)", desc: "標準貫入試驗值，代表土壤的「硬度」..." },
-        "quicksand": { title: "流砂 (Running Sand)", desc: "飽含地下水的鬆散砂土層..." },
-        "backfill": { title: "背填灌漿 (Backfill Grouting)", desc: "推進管線施工時，管壁與土層間會產生空隙..." },
-        "epb": { title: "土壓平衡式 (EPB)", desc: "Earth Pressure Balance..." },
-        "gravel": { title: "卵礫石層 (Gravel)", desc: "含有大量圓形石塊的地層..." },
-        "mud": { title: "泥濃式推進 (Mud Dense)", desc: "使用高濃度、高黏滯性的特製泥漿..." },
-        "qmax": { title: "計畫最大日污水量 (Qmax)", desc: "Maximum Hourly Flow..." },
-        "lpcd": { title: "單位污水量 (LPCD)", desc: "Liters Per Capita per Day..." },
-        "pf": { title: "尖峰係數 (Peaking Factor)", desc: "最大時流量與平均日流量的比值..." },
-        "manning": { title: "曼寧公式 (Manning Formula)", desc: "土木水利工程計算明渠流速最常用的公式..." },
-        "rcp": { title: "鋼筋混凝土管 (RCP)", desc: "Reinforced Concrete Pipe..." },
-        "prcp": { title: "聚酯樹脂混凝土管 (PRCP)", desc: "Polyester Resin Concrete Pipe..." },
-        "clogging": { title: "鏡面效應 (Clogging)", desc: "在黏土層掘進時，黏性土糊在刀盤切削面上..." },
-        "slime": { title: "生物膜效應 (Slime)", desc: "污水管使用一段時間後，管壁滋生的一層黏滑生物膜..." },
-        "tractive": { title: "掃流力 (Tractive Force)", desc: "水流對管壁產生的剪應力..." },
-        "crowncorr": { title: "冠部腐蝕 (Crown Corrosion)", desc: "污水管頂部因通風不良產生硫化氫氣體..." },
-        "flexible": { title: "柔性管", desc: "如 PVC 或 HDPE 管..." },
-        "soilpipe": { title: "管-土互制作用", desc: "柔性管埋設後，管體與周圍回填土壤共同承受載重的機制..." },
-        "gravity": { title: "重力流管線", desc: "依靠位能差流動，需保持特定坡度..." },
-        "pressure": { title: "壓力流管線", desc: "依靠泵浦加壓，不受坡度限制..." },
-        "siphon": { title: "倒虹吸 (Inverted Siphon)", desc: "利用連通管原理，讓水流先下潛穿過障礙物..." },
-        "clearance": { title: "安全淨距", desc: "兩管線間需保持的最小距離..." },
-        "los": { title: "道路服務水準 (Level of Service, LOS)", desc: "評估交通順暢度..." },
-        "taper": { title: "漸變段 (Taper)", desc: "車道縮減處..." },
-        "deck": { title: "覆工板 (Deck Plate)", desc: "高強度鋼板..." },
-        "tilt": { title: "傾度盤 (Tiltmeter)", desc: "安裝於建物牆面..." },
-        "ecocheck": { title: "生態檢核 (Ecological Checklist)", desc: "在工程各階段，透過迴避、縮小、減輕、補償..." },
-        "lcc": { title: "全生命週期成本 (Life Cycle Cost)", desc: "設施從規劃、建造到維護、拆除的總成本..." },
-        "clsm": { title: "CLSM (控制性低強度回填材料)", desc: "流動性佳、免夯實的回填材料..." },
-        "circular": { title: "循環經濟 (Circular Economy)", desc: "將資源利用最大化..." },
-        "microtunnel": { title: "微型推進 (Micro-tunneling)", desc: "適用於小管徑的遙控鑽掘技術..." }
+        "masterplan": { title: "污水下水道系統規劃 (Master Plan)", desc: "都市污水處理的最高指導原則與長期願景。通常設定目標年為 20~30 年，定義集污區範圍、處理廠位置與主幹管路線，是爭取預算與分期建設的依據。" },
+        "implplan": { title: "實施計畫 (Implementation Plan)", desc: "依據系統規劃制定的具體執行方案，通常以 5-10 年為一期。詳細列出每期的工程範圍、預算編列及預期效益，需經中央核定後才能動支經費。" },
+        "ds": { title: "設計監造合併", desc: "將設計與監造工作委託給同一家廠商。優點是設計者最了解原意，若施工遇到障礙（如地下管線），能快速進行變更設計，減少權責爭議。" },
+        "trialpit": { title: "試挖 (Trial Pit)", desc: "在工程設計或開工前，於預定路徑上挖掘小坑洞。目的在確認地下管線的實際位置、深度與地質狀況，以避免工作井位置衝突或挖斷管線。" },
+        "gis": { title: "GIS (地理資訊系統)", desc: "Geographic Information System。將地下管線、設施位置等空間數據數位化建檔。能協助工程師在電腦地圖上管理複雜的地下管網。" },
+        "neighbor": { title: "鄰房鑑定", desc: "施工前委託公正第三方（如公會）對沿線建築物進行現況調查（拍照、紀錄裂縫）。若施工造成損鄰，此報告為釐清責任與賠償的重要依據。" },
+        "nvalue": { title: "N值 (Standard Penetration Test N-Value)", desc: "標準貫入試驗值，代表土壤的「硬度」或「緊密度」。數值越小土越軟（N<4 為極軟弱），數值越大土越硬（N>50 為堅硬或卵礫石）。" },
+        "quicksand": { title: "流砂 (Running Sand)", desc: "飽含地下水的鬆散砂土層。開挖時若水壓平衡未控制好，砂土會像液體一樣流動湧入工作井，極易造成路面塌陷。" },
+        "backfill": { title: "背填灌漿 (Backfill Grouting)", desc: "推進管線施工時，管壁與土層間會產生空隙。必須同步注入漿液填滿這些空隙，以防止上方地層下陷。" },
+        "epb": { title: "土壓平衡式 (EPB)", desc: "Earth Pressure Balance。利用切削下来的土砂充滿機頭土艙，透過螺旋排土器控制壓力，來平衡前方的地下水壓與土壓，防止崩塌。" },
+        "gravel": { title: "卵礫石層 (Gravel)", desc: "含有大量圓形石塊的地層。石塊硬度高且孔隙大，容易卡死掘進機頭或導致泥水流失（逸漿），是推進工程中最棘手的地質之一。" },
+        "mud": { title: "泥濃式推進 (Mud Dense)", desc: "使用高濃度、高黏滯性的特製泥漿。能有效將卵礫石「包覆」並懸浮運出，且泥漿不易流失，是卵礫石層的首選工法。" },
+        "qmax": { title: "計畫最大日污水量 (Qmax)", desc: "Maximum Hourly Flow。設計管渠容量的基準。考量一天中用水量最高的時段（如早晚尖峰）再加上地下水入滲量，確保管線不會滿溢。" },
+        "lpcd": { title: "單位污水量 (LPCD)", desc: "Liters Per Capita per Day。平均每人每天產生的污水公升數。計算公式為：每人用水量 ×污水轉換率（通常為 0.9）。" },
+        "pf": { title: "尖峰係數 (Peaking Factor)", desc: "最大時流量與平均日流量的比值。人口越少的社區，大家作息越同步，瞬間用水波動越大，PF 值通常介於 2~4 之間。" },
+        "manning": { title: "曼寧公式 (Manning Formula)", desc: "土木水利工程計算明渠流速最常用的公式。流速 V 取決於粗糙係數 n、水力半徑 R 與坡度 S。" },
+        "rcp": { title: "鋼筋混凝土管 (RCP)", desc: "Reinforced Concrete Pipe。傳統且常用的管材。優點是便宜、強度高；缺點是重、表面較粗糙、且易受污水中的硫化氫腐蝕。" },
+        "prcp": { title: "聚酯樹脂混凝土管 (PRCP)", desc: "Polyester Resin Concrete Pipe。以樹脂取代水泥。強度是 RCP 的 2~3 倍，表面極光滑 (n值低)，耐酸鹼腐蝕，適合長距離推進。" },
+        "clogging": { title: "鏡面效應 (Clogging)", desc: "在黏土層掘進時，黏性土糊在刀盤切削面上，變成像光華的鏡面一樣空轉，導致無法切削前進。" },
+        "slime": { title: "生物膜效應 (Slime)", desc: "污水管使用一段時間後，管壁滋生的一層黏滑生物膜。這會改變管壁粗糙度，影響水流速度，設計時需考量此因素修正 n 值。" },
+        "tractive": { title: "掃流力 (Tractive Force)", desc: "水流對管壁產生的剪應力。必須足夠大才能將沉積在管底的泥沙帶走，防止淤積。" },
+        "crowncorr": { title: "冠部腐蝕 (Crown Corrosion)", desc: "污水管頂部因通風不良產生硫化氫氣體，與凝結水結合形成硫酸，腐蝕混凝土管頂的現象。" },
+        "flexible": { title: "柔性管", desc: "如 PVC 或 HDPE 管。受壓時會產生微小變形，利用側向變形擠壓周圍土壤產生被動土壓來支撐載重，非靠自身剛性硬抗。" },
+        "soilpipe": { title: "管-土互制作用", desc: "柔性管埋設後，管體與周圍回填土壤共同承受載重的機制。施工時的回填夯實品質是關鍵。" },
+        "gravity": { title: "重力流管線", desc: "依靠位能差流動，需保持特定坡度，高程受限大。如雨水、污水管。" },
+        "pressure": { title: "壓力流管線", desc: "依靠泵浦加壓，不受坡度限制，可透過彎頭靈活調整。如自來水、瓦斯管。" },
+        "siphon": { title: "倒虹吸 (Inverted Siphon)", desc: "利用連通管原理，讓水流先下潛穿過障礙物再爬升。因易淤積，僅在無法重力穿越時使用。" },
+        "clearance": { title: "安全淨距", desc: "兩管線間需保持的最小距離。污水穿雨水箱涵建議淨距 >= 30~50cm。" },
+        "los": { title: "道路服務水準 (Level of Service, LOS)", desc: "評估交通順暢度，從A(自由)到F(塞車)。施工期間需維持在 LOS E 以上。" },
+        "taper": { title: "漸變段 (Taper)", desc: "車道縮減處，利用交通錐引導車流平順變換車道的過渡區。" },
+        "deck": { title: "覆工板 (Deck Plate)", desc: "高強度鋼板，用於臨時覆蓋開挖坑洞，讓車輛得以通行。" },
+        "tilt": { title: "傾度盤 (Tiltmeter)", desc: "安裝於建物牆面，監測是否因施工造成傾斜，判斷基準為角變量。" },
+        "ecocheck": { title: "生態檢核 (Ecological Checklist)", desc: "在工程各階段，透過迴避、縮小、減輕、補償四步驟，減輕對生態環境與文化資產衝擊的管理機制。" },
+        "lcc": { title: "全生命週期成本 (Life Cycle Cost)", desc: "設施從規劃、建造到維護、拆除的總成本。PRCP 雖建造成本高，但維護費低，LCC 反而較低。" },
+        "clsm": { title: "CLSM (控制性低強度回填材料)", desc: "流動性佳、免夯實的回填材料。常用於管溝回填，並可摻配再生粒料，是綠色工程的重要應用。" },
+        "circular": { title: "循環經濟 (Circular Economy)", desc: "將資源利用最大化。如土方挖填平衡、鋼板樁租賃回收，皆是將廢棄物轉為資源的實踐。" },
+        "microtunnel": { title: "微型推進 (Micro-tunneling)", desc: "適用於小管徑的遙控鑽掘技術。對地表干擾極小，保護植被與減少噪音，是市區生態友善工法。" }
     };
 
     function openDef(key) {
