@@ -33,7 +33,7 @@
             --color-note: #FEFBEA;       /* 筆記底色 */
             --color-risk: #FFF0F3;       /* 風險底色 */
             
-            --text-main: #4A4A4A;        
+            --text-main: #4A4A4A;        /* 加深文字顏色以提升閱讀性 */
             --text-title: #2D2D2D;       
             
             --shadow-soft: 0 10px 40px -10px rgba(229, 152, 155, 0.25);
@@ -76,12 +76,15 @@
             border: 2px solid white;
         }
         .login-title { font-family: 'DM Serif Display', serif; font-size: 2.5rem; color: var(--text-title); margin-bottom: 0.5rem; }
+        
+        /* 通用 Input 與 Button */
         .login-input {
-            width: 100%; padding: 12px 15px; margin: 5px 0; border: 2px solid #EEE;
-            border-radius: 12px; font-size: 1rem; text-align: center; outline: none; transition: 0.3s;
+            width: 100%; padding: 12px 15px; margin: 10px 0; border: 2px solid #EEE;
+            border-radius: 15px; font-size: 1rem; text-align: center; outline: none; transition: 0.3s;
             background: #FAFAFA; color: var(--text-title);
         }
         .login-input:focus { border-color: var(--color-rose); background: white; }
+        
         .login-btn {
             background: var(--color-rose); color: white; border: none;
             padding: 12px 30px; border-radius: 50px; font-size: 1rem; font-weight: 800;
@@ -98,7 +101,7 @@
         .blob-2 { bottom: -10%; left: -10%; width: 400px; height: 400px; background: #E5E5F7; }
         @keyframes floatBlob { from { transform: translate(0,0); } to { transform: translate(20px, 20px); } }
 
-        /* --- Sidebar --- */
+        /* --- Sidebar & Navigation --- */
         .mobile-menu-btn {
             display: none; position: fixed; top: 1.5rem; right: 1.5rem;
             background: white; width: 50px; height: 50px; border-radius: 50%;
@@ -221,21 +224,22 @@
         .inner-tab-content { display: none; animation: fadeIn 0.4s ease; }
         .inner-tab-content.active { display: block; }
 
-        /* --- ★★★ Markdown Layout & Styles (FIXED) ★★★ --- */
+        /* --- ★★★ Markdown Layout (Fixed Sticky) ★★★ --- */
         #markdown-container { 
             background: white; 
             padding: 0; 
             border-radius: var(--radius-bubble); 
             box-shadow: 0 5px 30px rgba(0,0,0,0.02); 
             margin-top: 1rem; 
+            /* overflow: hidden;  <-- 移除此行，解決 Sticky 失效問題 */
         }
         
         .md-layout { 
             display: flex; 
             align-items: flex-start; 
             gap: 40px; 
-            padding: 3rem 0 3rem 4rem; 
-            justify-content: space-between; 
+            padding: 3rem 0 3rem 4rem; /* 右側 padding 為 0，讓選單靠最右 */
+            justify-content: space-between; /* 撐開左右 */
         }
         
         .md-content { 
@@ -244,7 +248,7 @@
             font-size: 1.15rem; 
             line-height: 1.9; 
             color: #333; 
-            padding-right: 20px; 
+            padding-right: 20px; /* 內文右側保留一點空間，不要貼到選單 */
         }
         
         .md-content h1 { color: var(--text-title); font-size: 2.4rem; margin-top: 1rem; margin-bottom: 1.5rem; border-bottom: 3px solid var(--color-rose-light); padding-bottom: 15px; font-family: 'DM Serif Display'; }
@@ -264,12 +268,12 @@
         .md-toc { 
             width: 260px; 
             position: sticky; 
-            top: 80px; 
+            top: 80px; /* 距離頂部 80px 吸附 */
             max-height: calc(100vh - 100px); 
             overflow-y: auto; 
             border-left: 2px solid #F0F0F0; 
             padding-left: 25px; 
-            padding-right: 2rem; 
+            padding-right: 2rem; /* 右側保留空間 */
             flex-shrink: 0;
             height: fit-content; 
         }
@@ -282,7 +286,7 @@
         .toc-h2 { margin-left: 0; font-weight: 600; }
         .toc-h3 { margin-left: 15px; font-size: 0.9rem; }
 
-        /* --- ★★★ 計算機樣式 (Calculator Styles - 恢復完整性) ★★★ --- */
+        /* --- ★★★ 計算機樣式 (Calculator Styles) ★★★ --- */
         .calc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem; }
         .calc-section-title { color: var(--color-sage); font-size: 1.2rem; font-weight: 800; margin: 2rem 0 1rem 0; border-bottom: 1px solid #EEE; padding-bottom: 10px; }
         .calc-label { font-weight: 700; color: var(--text-main); margin-bottom: 8px; display: block; font-size: 0.95rem; }
@@ -387,8 +391,8 @@
             <div class="grid-cards">
                 <div class="pretty-card" onclick="navigate('tools')"><div class="card-emoji">📂</div><div class="card-name">資料庫</div><div class="card-desc">點此查詢 QGIS、地政、水利相關操作手冊。</div></div>
                 <div class="pretty-card" onclick="navigate('calculator')"><div class="card-emoji">🧮</div><div class="card-name">污水管流計算機</div><div class="card-desc">設計流量推估、單管檢核與管徑速查。</div></div>
-                <div class="pretty-card"><div class="card-emoji">🧪</div><div class="card-name">工程小幫手</div><div class="card-desc">常用管徑換算。</div></div>
-                <div class="pretty-card"><div class="card-emoji">🚑</div><div class="card-name">SOS 救援</div><div class="card-desc">異常狀況排除的標準流程決策樹。</div></div>
+                <div class="pretty-card" onclick="navigate('phase1')"><div class="card-emoji">📖</div><div class="card-name">學習筆記</div><div class="card-desc">工程規劃五階段詳細筆記。</div></div>
+                <div class="pretty-card" onclick="alert('雲端功能尚未建置，請稍候！')"><div class="card-emoji">☁️</div><div class="card-name">雲端硬碟</div><div class="card-desc">存放專案文件與圖資 (建置中)。</div></div>
             </div>
         </section>
 
@@ -447,7 +451,7 @@
                         <div><span class="calc-label">單位量 (CMD/ha)</span><input type="number" id="parkUnit" class="login-input" value="8"></div>
                     </div>
 
-                    <h3 style="border-left-color:var(--color-rose); color:var(--color-rose);">3. 總污水量與入滲計算</h3>
+                    <h3 style="border-left-color:var(--color-rose); color:var(--color-rose);">3. 入滲率設定</h3>
                     <div class="calc-grid">
                         <div>
                             <span class="calc-label">地下水入滲率 (%)</span>
