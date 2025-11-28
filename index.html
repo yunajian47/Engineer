@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Water Diary | 污水下水道工程</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Nunito:wght@400;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      }
+    };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            /* --- Water Diary 配色系統 --- */
+            --bg-cream: #FFF9F5;          
+            --card-white: #FFFFFF;        
+            
+            --color-rose: #E5989B;       /* 重點色 */
+            --color-rose-light: #FFF0F3;
+            --color-sage: #84A98C;       /* 綠色 */
+            --color-sage-light: #F0FDF4;
+            --color-sand: #D4A373;       /* 土色 */
+            --color-sand-light: #FEFBEA;
+            --color-note: #FEFBEA;       /* 筆記底色 */
+            --color-risk: #FFF0F3;       /* 風險底色 */
+            
+            --text-main: #5C5C5C;        
+            --text-title: #2D2D2D;       
+            
+            --shadow-soft: 0 10px 40px -10px rgba(229, 152, 155, 0.25);
+            --shadow-hover: 0 15px 50px -10px rgba(229, 152, 155, 0.4);
+            --radius-bubble: 30px;
+            --radius-md: 16px;
+            
+            --z-blob: -1;
+            --z-modal: 1000;
+            --z-sidebar: 100;
+            --z-mobile-btn: 101;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Noto Sans TC', 'Nunito', sans-serif;
+            background-color: var(--bg-cream);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            overflow-x: hidden;
+            line-height: 1.8;
+        }
+
+        /* --- 背景裝飾 --- */
+        .blob { position: fixed; border-radius: 50%; filter: blur(80px); z-index: var(--z-blob); opacity: 0.6; animation: floatBlob 10s infinite alternate; }
+        .blob-1 { top: -10%; right: -10%; width: 500px; height: 500px; background: #FFCDB2; }
+        .blob-2 { bottom: -10%; left: -10%; width: 400px; height: 400px; background: #E5E5F7; }
+        
+        @keyframes floatBlob { from { transform: translate(0,0); } to { transform: translate(20px, 20px); } }
+
+        /* --- 手機版漢堡選單按鈕 --- */
+        .mobile-menu-btn {
+            display: none; position: fixed; top: 1.5rem; right: 1.5rem;
+            background: white; width: 50px; height: 50px; border-radius: 50%;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1); z-index: var(--z-mobile-btn);
+            justify-content: center; align-items: center; font-size: 1.5rem;
+            color: var(--color-rose); cursor: pointer; transition: 0.3s;
+        }
+        .mobile-menu-btn:active { transform: scale(0.9); }
+
+        /* --- 左側選單 (Sidebar) --- */
+        .sidebar {
+            width: 280px; margin: 2rem; background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px); border-radius: var(--radius-bubble);
+            padding: 3rem 1.5rem; display: flex; flex-direction: column;
+            box-shadow: var(--shadow-soft); height: calc(100vh - 4rem);
+            position: sticky; top: 2rem; flex-shrink: 0;
+            overflow-y: auto; z-index: var(--z-sidebar);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .sidebar::-webkit-scrollbar { width: 0px; background: transparent; }
+
+        .brand { 
+            font-family: 'DM Serif Display', serif; font-size: 1.8rem; 
+            color: var(--color-rose); margin-bottom: 2.5rem; text-align: center; 
+            font-style: italic; cursor: pointer; user-select: none;
+        }
+
+        .nav-menu { display: flex; flex-direction: column; gap: 0.8rem; }
+
+        .nav-item {
+            display: flex; align-items: center; padding: 1rem 1.5rem;
+            text-decoration: none; color: var(--text-main); font-weight: 700;
+            border-radius: 20px; transition: all 0.3s ease; cursor: pointer;
+            border: 1px solid transparent;
+        }
+        .nav-item:hover { background-color: var(--color-rose-light); color: var(--color-rose); }
+        .nav-item.active { 
+            background-color: var(--color-rose-light); color: var(--color-rose); 
+            box-shadow: 0 4px 15px rgba(229, 152, 155, 0.15);
+            border-color: #FFE5D9;
+        }
+        .nav-icon { margin-right: 12px; font-size: 1.2rem; width: 24px; text-align: center;}
+
+        .nav-dropdown-trigger { justify-content: space-between; }
+        .arrow-icon { font-size: 0.8rem; transition: transform 0.3s; color: #BBB; }
+        .nav-item.open .arrow-icon { transform: rotate(180deg); color: var(--color-rose); }
+        
+        .sub-menu {
+            display: none; flex-direction: column; gap: 5px;
+            padding-left: 20px; margin-top: 5px; margin-bottom: 5px;
+            animation: slideDown 0.3s ease-out;
+        }
+        
+        .sub-item {
+            padding: 0.8rem 1.5rem; font-size: 0.9rem; color: #888; font-weight: 600;
+            border-radius: 15px; cursor: pointer; transition: 0.2s;
+            display: flex; align-items: center;
+        }
+        .sub-item::before { content: '•'; margin-right: 10px; font-size: 1.2rem; opacity: 0.5; }
+        .sub-item:hover { color: var(--color-rose); background: rgba(255,255,255,0.5); }
+        .sub-item.active { color: var(--color-rose); font-weight: 800; background: var(--color-rose-light); }
+
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- 主內容 --- */
+        .main-content { flex: 1; padding: 2rem 4rem; max-width: 1200px; width: 100%; transition: 0.3s; }
+        .view-section { display: none; animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+        .view-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Header */
+        header { margin-bottom: 3rem; padding-top: 1rem; }
+        h1 { font-family: 'DM Serif Display', serif; font-size: 3.5rem; color: var(--text-title); font-weight: 400; margin-bottom: 0.5rem; line-height: 1.1; letter-spacing: -1px; }
+        h1 span { color: var(--color-rose); font-style: italic; }
+        .subtitle { font-size: 1.1rem; color: #999; font-weight: 500; }
+
+        /* 首頁工具卡片 */
+        .grid-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 2rem; margin-top: 2rem; }
+        .pretty-card {
+            background: var(--card-white); border-radius: var(--radius-bubble); padding: 2.5rem 2rem;
+            text-align: center; transition: 0.3s; box-shadow: 0 5px 25px rgba(0,0,0,0.03);
+            border: 2px solid transparent; cursor: pointer; position: relative; overflow: hidden;
+        }
+        .pretty-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-hover); border-color: #FFCDB2; }
+        .card-emoji { font-size: 3.5rem; background: var(--color-rose-light); width: 90px; height: 90px; line-height: 90px; border-radius: 50%; margin: 0 auto 1.5rem auto; transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .pretty-card:hover .card-emoji { transform: rotate(10deg) scale(1.1); background: #FFD7E0; }
+        .card-name { font-size: 1.25rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.8rem; }
+        .card-desc { font-size: 0.95rem; color: #999; line-height: 1.6; }
+
+        /* 文章樣式 */
+        .chapter-header { background: var(--color-rose-light); padding: 3rem 4rem; border-radius: var(--radius-bubble) var(--radius-bubble) 0 0; border-bottom: 1px dashed #FFE5D9; }
+        .chapter-body { background: white; padding: 4rem; border-radius: 0 0 var(--radius-bubble) var(--radius-bubble); box-shadow: 0 5px 30px rgba(0,0,0,0.02); }
+        
+        .note-box { background: var(--color-note); padding: 2rem; border-radius: var(--radius-md); margin: 2rem 0; border-left: 5px solid var(--color-sand); box-shadow: 0 5px 15px rgba(0,0,0,0.03); }
+        .risk-box { background: var(--color-risk); padding: 2rem; border-radius: var(--radius-md); margin: 2rem 0; border: 1px solid #FFDEE2; position: relative; }
+        
+        /* 表格優化：增加容器以支持橫向捲動 */
+        .table-container { width: 100%; overflow-x: auto; border-radius: 12px; margin: 1.5rem 0; border: 1px solid #EEE; }
+        .styled-table { width: 100%; border-collapse: collapse; font-size: 0.95rem; background: white; min-width: 600px; } /* min-width確保手機上不會太擠 */
+        .styled-table th, .styled-table td { padding: 18px 25px; border-bottom: 1px solid #EEE; text-align: left; vertical-align: middle; }
+        .styled-table th { background: #FAFAFA; color: var(--color-sage); font-weight: 800; border-bottom: 2px solid var(--color-sage); white-space: nowrap; }
+        .styled-table tr:last-child td { border-bottom: none; }
+        
+        .geo-badge { display: inline-block; padding: 5px 12px; border-radius: 8px; color: white; font-weight: 800; font-size: 0.85rem; min-width: 80px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+
+        h3 { font-size: 1.5rem; color: var(--color-sand); margin-top: 3.5rem; margin-bottom: 1.5rem; border-left: 6px solid #FFE5D9; padding-left: 1rem; font-weight: 800; line-height: 1.3; }
+        h4 { font-size: 1.2rem; color: var(--color-rose); margin-top: 1.5rem; margin-bottom: 1rem; font-weight: 700; display: flex; align-items: center; }
+        
+        .math-box { 
+            background: #F9FAFB; padding: 2rem; border-radius: 16px; margin: 1.5rem 0; 
+            border: 1px dashed #DDD; text-align: center; font-size: 1.15rem; 
+            overflow-x: auto; box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);
+        }
+
+        /* 名詞解釋連結與彈窗 */
+        .def-link {
+            color: var(--color-rose);
+            font-weight: 700;
+            cursor: pointer;
+            border-bottom: 1px dashed var(--color-rose);
+            transition: all 0.2s;
+            position: relative;
+            padding-bottom: 1px;
+        }
+        .def-link:hover { background-color: var(--color-rose-light); border-bottom-style: solid; color: #D67C80; }
+        .def-link::after { content: '?'; font-size: 0.7rem; vertical-align: super; margin-left: 2px; opacity: 0.6; font-weight: 800; }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(8px);
+            z-index: var(--z-modal); display: none; justify-content: center; align-items: center;
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .modal-overlay.active { display: flex; opacity: 1; }
+
+        .modal-card {
+            background: white; width: 90%; max-width: 550px;
+            border-radius: var(--radius-bubble); padding: 3rem;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15); position: relative;
+            border: 1px solid white; transform: translateY(20px); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .modal-overlay.active .modal-card { transform: translateY(0); }
+
+        .modal-close {
+            position: absolute; top: 25px; right: 30px; width: 32px; height: 32px;
+            font-size: 1.8rem; color: #DDD; cursor: pointer; transition: 0.2s;
+            display: flex; justify-content: center; align-items: center; border-radius: 50%;
+        }
+        .modal-close:hover { color: var(--color-rose); background: #FFF0F3; }
+
+        .modal-title {
+            font-family: 'DM Serif Display', serif; font-size: 2.2rem; color: var(--text-title);
+            margin-bottom: 1rem; border-bottom: 4px solid var(--color-note);
+            display: inline-block; padding-bottom: 5px; line-height: 1.1;
+        }
+        .modal-content { font-size: 1.05rem; color: var(--text-main); line-height: 1.8; margin-top: 1rem; }
+        .modal-tag {
+            display: inline-block; background: var(--color-note); color: var(--color-sand);
+            padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: 800;
+            margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        /* 警示燈號 */
+        .status-badge { display: inline-block; padding: 4px 12px; border-radius: 15px; color: white; font-weight: 700; font-size: 0.85rem; }
+        .status-green { background: #6BCB77; }
+        .status-yellow { background: #FFD93D; color: #555; }
+        .status-red { background: #FF6B6B; }
+
+        /* Phase 4 內部 Tab & ★★★ 新增：Tools 的 Tab 樣式 ★★★ */
+        .tab-nav { display: flex; gap: 1rem; border-bottom: 2px solid #F0F0F0; margin-bottom: 2.5rem; overflow-x: auto; padding-bottom: 10px; }
+        .tab-btn { 
+            padding: 10px 20px; background: none; border: none; font-size: 1.1rem; 
+            font-weight: 700; color: #BBB; cursor: pointer; 
+            border-bottom: 3px solid transparent; transition: 0.3s; white-space: nowrap; flex-shrink: 0;
+        }
+        .tab-btn:hover { color: var(--color-rose); }
+        .tab-btn.active { color: var(--color-rose); border-bottom-color: var(--color-rose); }
+        .inner-tab-content { display: none; animation: fadeIn 0.4s ease; }
+        .inner-tab-content.active { display: block; }
+
+        /* ★★★ 新增：Markdown 容器樣式 ★★★ */
+        #markdown-container { background: white; padding: 3rem; border-radius: var(--radius-bubble); box-shadow: 0 5px 30px rgba(0,0,0,0.02); margin-top: 1rem; }
+        #markdown-container h1 { color: var(--text-title); font-size: 2rem; margin-bottom: 1.5rem; border-bottom: 2px solid var(--color-rose-light); padding-bottom: 10px; }
+        #markdown-container h2 { color: var(--color-rose); margin-top: 2rem; margin-bottom: 1rem; font-family: 'DM Serif Display'; font-size: 1.8rem; }
+        #markdown-container h3 { color: var(--color-sand); margin-top: 1.5rem; font-size: 1.3rem; border-left: 4px solid var(--color-sand); padding-left: 10px; }
+        #markdown-container p { line-height: 1.8; margin-bottom: 1rem; }
+        #markdown-container img { max-width: 100%; border-radius: 12px; margin: 1rem 0; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        #markdown-container ul { padding-left: 1.5rem; margin-bottom: 1rem; }
+        #markdown-container a { color: var(--color-sage); font-weight: bold; text-decoration: none; border-bottom: 1px dashed var(--color-sage); }
+
+
+        /* RWD 響應式優化 */
+        @media (max-width: 900px) {
+            .mobile-menu-btn { display: flex; }
+            
+            .sidebar { 
+                position: fixed; top: 0; left: 0; margin: 0; height: 100vh; 
+                transform: translateX(-100%); width: 280px; border-radius: 0 30px 30px 0;
+            }
+            .sidebar.mobile-active { transform: translateX(0); box-shadow: 0 0 100px rgba(0,0,0,0.5); }
+            
+            /* 點擊遮罩關閉側邊欄 */
+            .sidebar-overlay {
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3);
+                z-index: 99; display: none; backdrop-filter: blur(3px); opacity: 0; transition: opacity 0.3s;
+            }
+            .sidebar-overlay.active { display: block; opacity: 1; }
+
+            .main-content { padding: 1.5rem; width: 100%; }
+            .chapter-header { padding: 2rem; }
+            .chapter-body { padding: 2rem 1.5rem; }
+            
+            h1 { font-size: 2.5rem; margin-top: 3rem; }
+            h3 { margin-top: 2.5rem; font-size: 1.3rem; }
+            
+            /* Tab 在手機上改為區塊顯示 */
+            .tab-nav { flex-direction: row; gap: 5px; border-bottom: none; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+            .tab-btn { border: 1px solid #EEE; border-radius: 20px; margin-bottom: 5px; border-bottom: 1px solid #EEE; }
+            .tab-btn.active { background: var(--color-rose-light); border-color: var(--color-rose); border-bottom: 1px solid var(--color-rose); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <div class="modal-overlay" id="glossary-modal" onclick="closeModal(event)">
+        <div class="modal-card" onclick="event.stopPropagation()">
+            <div class="modal-close" onclick="closeModal(event)">×</div>
+            <span class="modal-tag">Term Definition</span><br>
+            <div class="modal-title" id="modal-term-title">Title</div>
+            <div class="modal-content" id="modal-term-desc">Description goes here.</div>
+        </div>
+    </div>
+
+    <div class="mobile-menu-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></div>
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <nav class="sidebar" id="main-sidebar">
+        <div class="brand" onclick="navigate('dashboard')">Water Diary.</div>
+        <div class="nav-menu">
+            <div class="nav-item active" data-target="dashboard" onclick="navigate('dashboard')">
+                <div style="display:flex; align-items:center;"><span class="nav-icon">✨</span> 總覽 Daily</div>
+            </div>
+            <div class="nav-item" data-target="tools" onclick="navigate('tools')">
+                <div style="display:flex; align-items:center;"><span class="nav-icon">🌿</span> 實務 Tools</div>
+            </div>
+            
+            <div class="nav-item nav-dropdown-trigger" id="btn-learn" onclick="toggleDropdown('menu-learn')">
+                <div style="display:flex; align-items:center;"><span class="nav-icon">📖</span> 學習 Note</div>
+                <i class="fa-solid fa-chevron-down arrow-icon"></i>
+            </div>
+            <div class="sub-menu" id="menu-learn">
+                <div class="sub-item" data-target="phase1" onclick="navigate('phase1')">Phase 1: 上位計畫</div>
+                <div class="sub-item" data-target="phase2" onclick="navigate('phase2')">Phase 2: 環境調查</div>
+                <div class="sub-item" data-target="phase3" onclick="navigate('phase3')">Phase 3: 設計準則</div>
+                <div class="sub-item" data-target="phase4" onclick="navigate('phase4')">Phase 4: 施工方案</div>
+                <div class="sub-item" data-target="phase5" onclick="navigate('phase5')">Phase 5: 環保節能</div>
+            </div>
+
+            <div class="nav-item">
+                <div style="display:flex; align-items:center;"><span class="nav-icon">☁️</span> 雲端 Data</div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        
+        <section id="view-dashboard" class="view-section active">
+            <header>
+                <h1>Hello, <span>Engineer</span></h1>
+                <p class="subtitle">今天又要上班了 😩 但至少為了這座城市的靜脈努力。</p>
+            </header>
+            <div class="grid-cards">
+                <div class="pretty-card" onclick="navigate('tools')"><div class="card-emoji">📂</div><div class="card-name">資料庫</div><div class="card-desc">點此查詢 QGIS、地政、水利相關操作手冊。</div></div>
+                <div class="pretty-card"><div class="card-emoji">🧮</div><div class="card-name">SVI 計算機</div><div class="card-desc">輸入 SV30 與 MLSS，快速判斷污泥沈降性。</div></div>
+                <div class="pretty-card"><div class="card-emoji">🧪</div><div class="card-name">藥劑小幫手</div><div class="card-desc">PAC / Polymer 泡藥濃度與每分鐘流量換算。</div></div>
+                <div class="pretty-card"><div class="card-emoji">🚑</div><div class="card-name">SOS 救援</div><div class="card-desc">異常狀況排除的標準流程決策樹。</div></div>
+            </div>
+        </section>
+
+        <section id="view-tools" class="view-section">
+            <header>
+                <div style="font-size:0.9rem; color:var(--color-sand); font-weight:700; margin-bottom:10px;">RESOURCE LIBRARY</div>
+                <h1 style="font-size:2.5rem; font-family:'DM Serif Display';">System <span style="color:var(--color-sage);">Manuals</span></h1>
+            </header>
+
+            <div class="tab-nav">
+                <button class="tab-btn active" onclick="loadMarkdown('QGIS.md', this)">QGIS</button>
+                <button class="tab-btn" onclick="loadMarkdown('CODiS 氣候觀測資料查詢服務.md', this)">氣候觀測</button>
+                <button class="tab-btn" onclick="loadMarkdown('內政部-門牌電子地圖查詢系統.md', this)">門牌地圖</button>
+                <button class="tab-btn" onclick="loadMarkdown('公路交通量調查統計地圖.md', this)">公路交通量</button>
+                <button class="tab-btn" onclick="loadMarkdown('全國地政電子謄本系統.md', this)">地政謄本</button>
+                <button class="tab-btn" onclick="loadMarkdown('全國橋梁統計資訊網.md', this)">橋梁統計</button>
+                <button class="tab-btn" onclick="loadMarkdown('全國環境水質監測資訊網.md', this)">水質監測</button>
+                <button class="tab-btn" onclick="loadMarkdown('地籍圖資網路便民服務系統.md', this)">地籍圖資</button>
+                <button class="tab-btn" onclick="loadMarkdown('國土測繪中心圖資服務雲.md', this)">國土測繪</button>
+                <button class="tab-btn" onclick="loadMarkdown('臺南市道路挖掘系統.md', this)">南市道路挖掘</button>
+            </div>
+
+            <div id="markdown-container">
+                <p style="color:#aaa;">請點擊上方按鈕載入說明文件...</p>
+            </div>
+        </section>
+
+        <section id="view-phase1" class="view-section">
+            <header>
+                <div style="font-size:0.9rem; color:var(--color-rose); font-weight:700; margin-bottom:10px; letter-spacing:1px;">LEARNING MODULE</div>
+                <h1>Phase 01: <br><span>Project Initiation</span></h1>
+            </header>
+            <article>
+                <div class="chapter-header"><div style="font-size:1.8rem; font-weight:700; font-family:'DM Serif Display';">上位計畫體系與發包決策</div></div>
+                <div class="chapter-body">
+                    <p>工程的成敗，往往在「開工前」就決定了。依據<strong>《下水道法》</strong>，建設具有嚴格的法定程序。</p>
+                    
+                    <h3>1.1 上位計畫的層級體系</h3>
+                    <div class="note-box">
+                        <h4>層級一：<span class="def-link" onclick="openDef('masterplan')">污水下水道系統規劃</span> (Master Plan)</h4>
+                        <p><strong>1. 法規定義：</strong>依下水道法第5條，為保護水域水質及資源循環利用。</p>
+                        <p><strong>2. 規劃目標年 (Target Year)：</strong>通常設定為 <span style="font-weight:700; color:var(--text-title);">20~30 年</span>。考量土木設施耐用年數約 50 年，且管線埋設後擴建困難，長期規劃可避免管徑設計過小。</p>
+                        <p><strong>3. 系統邊界：</strong>需依效益劃分「公共下水道」(人口密集)、「專用下水道」與「建築物污水處理設施」(分散聚落)。</p>
+                        <hr style="border:0; border-top:1px dashed #ddd; margin:20px 0;">
+                        
+                        <h4>層級二：<span class="def-link" onclick="openDef('implplan')">實施計畫</span> (Implementation Plan)</h4>
+                        <p><strong>1. 行政定位：</strong>爭取中央補助的請款依據。需核定後據以實施。</p>
+                        <p><strong>2. 分期建設原則：</strong>為達經濟效益與配合預算：<br>• 大規模 (>30,000 CMD)：原則分三期。<br>• 中規模 (10,000~30,000 CMD)：原則分二期。</p>
+                        <p><strong>3. 風險管控：</strong>設計時需檢討原規劃，考量人口變化，以免設施不經濟。</p>
+                        <hr style="border:0; border-top:1px dashed #ddd; margin:20px 0;">
+                        
+                        <h4>層級三：實質設計 (Design Project)</h4>
+                        <p><strong>1. 任務：</strong>將規劃概念確定化。產出契約、規範、計算書、預算書及招標文件。</p>
+                        <p><strong>2. 檢核點 (KPI)：</strong>用戶接管設計戶數與管線長度。</p>
+                    </div>
+
+                    <h3>1.2 勞務採購策略：為何採用 <span class="def-link" onclick="openDef('ds')">D&S (設計監造合併)</span>？</h3>
+                    <div class="risk-box" style="background:var(--color-sage-light); border-color:#CCFBF1;">
+                        <span style="font-weight:700; color:var(--color-sage); display:block; margin-bottom:10px; font-size:1.1rem;">論述一：解決「地下工程不可預見性」的責任歸屬</span>
+                        <ul style="list-style:none; padding-left:0; margin:0;">
+                            <li style="margin-bottom:8px;"><strong>• 深埋風險：</strong>管渠埋深達 <span style="font-weight:700;">3~15m</span>，常遇地形、河川、地質變異。</li>
+                            <li style="margin-bottom:8px;"><strong>• <span class="def-link" onclick="openDef('trialpit')">試挖</span>修正：</strong>設計階段需試挖、拍照並 <span class="def-link" onclick="openDef('gis')">GIS 建檔</span>，以確保工作井不衝突。</li>
+                            <li><strong>• 快速變更：</strong>合併招標能依據試挖成果，快速修正管線配置。</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="risk-box" style="background:var(--color-sage-light); border-color:#CCFBF1;">
+                        <span style="font-weight:700; color:var(--color-sage); display:block; margin-bottom:10px; font-size:1.1rem;">論述二：確保「行政調查資料」的連續性</span>
+                        <ul style="list-style:none; padding-left:0; margin:0;">
+                            <li style="margin-bottom:8px;"><strong>• 繁重行政：</strong>包含路權申請、交維計畫送審。</li>
+                            <li><strong>• <span class="def-link" onclick="openDef('neighbor')">鄰房鑑定</span>：</strong>施工前現況調查資料，對後續處理損鄰糾紛至關重要，必須無縫移交。</li>
+                        </ul>
+                    </div>
+
+                    <h3>1.3 施工標發包策略</h3>
+                    <ul style="list-style:none; padding-left:10px;">
+                        <li style="margin-bottom:1rem;"><strong>① 工項整合：</strong>推進與接管合併 (D標策略)。避免界面打架。</li>
+                        <li style="margin-bottom:1rem;"><strong>② 水系完整：</strong>依「集污分區」切割，確保功能獨立性。</li>
+                        <li style="margin-bottom:1rem;"><strong>③ 先易後難：</strong>先做人口密集區 (如二王重劃區)，提高CP值。</li>
+                    </ul>
+                </div>
+            </article>
+        </section>
+
+        <section id="view-phase2" class="view-section">
+            <header>
+                <div style="font-size:0.9rem; color:var(--color-sage); font-weight:700; margin-bottom:10px; letter-spacing:1px;">LEARNING MODULE</div>
+                <h1>Phase 02: <br><span style="color:var(--color-sage);">Investigation</span></h1>
+            </header>
+            <article>
+                <div class="chapter-header" style="background:var(--color-sage-light); border-bottom:1px dashed #CCFBF1;">
+                    <div style="font-size:1.8rem; font-weight:700; font-family:'DM Serif Display'; color:var(--color-sage);">環境背景調查與資訊查詢</div>
+                </div>
+                <div class="chapter-body">
+                    <p>此階段是工程風險管理的「防火牆」。透過科學調查，將「未知風險」轉化為「已知條件」。</p>
+                    <h3>2.1 必備資料與風險論述</h3>
+                    <div class="table-container">
+                        <table class="styled-table">
+                            <thead><tr><th>項目</th><th>執行方式 / 風險</th></tr></thead>
+                            <tbody>
+                                <tr><td>地下管線</td><td>發文調閱 + 協調會 + <strong>現場試挖</strong>。<br>避讓特高壓電、輸油管；雨水箱涵採下方穿越。</td></tr>
+                                <tr><td>地質條件</td><td>現地鑽探 (D標共30孔)。<span class="def-link" onclick="openDef('nvalue')">N值</span>決定工法。</td></tr>
+                                <tr><td>地形測量</td><td>誤差10cm可能導致逆坡。需引測國家控制點。</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <h3>2.2 地質判讀 (N值對照表)</h3>
+                    <div class="table-container">
+                        <table class="styled-table">
+                            <thead><tr><th width="100">N值</th><th>地層特性 & SOP</th></tr></thead>
+                            <tbody>
+                                <tr><td><span class="geo-badge" style="background:#FF6B6B">0 ~ 4</span></td><td><strong>極鬆散 (<span class="def-link" onclick="openDef('quicksand')">流砂</span>)：</strong>井底需地盤改良。嚴禁開放式挖掘。</td></tr>
+                                <tr><td><span class="geo-badge" style="background:#FFD93D; color:#555">4 ~ 10</span></td><td><strong>軟弱 (黏土)：</strong>需同步<span class="def-link" onclick="openDef('backfill')">背填灌漿</span>，添加分散劑防結泥。</td></tr>
+                                <tr><td><span class="geo-badge" style="background:#6BCB77">10 ~ 30</span></td><td><strong>中度緊密：</strong>甜蜜點 (Sweet Spot)。<span class="def-link" onclick="openDef('epb')">土壓平衡式 (EPB)</span> 最佳。</td></tr>
+                                <tr><td><span class="geo-badge" style="background:#6D6875"> > 50</span></td><td><strong><span class="def-link" onclick="openDef('gravel')">卵礫石</span>：</strong>易卡機。需選用滾刀機頭，推薦<span class="def-link" onclick="openDef('mud')">泥濃式</span>工法。</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </article>
+        </section>
+
+        <section id="view-phase3" class="view-section">
+            <header>
+                <div style="font-size:0.9rem; color:#D4A373; font-weight:700; margin-bottom:10px; letter-spacing:1px;">LEARNING MODULE</div>
+                <h1>Phase 03: <br><span style="color:#D4A373;">Design Criteria</span></h1>
+            </header>
+            <article>
+                <div class="chapter-header" style="background:#FEFBEA; border-bottom:1px dashed #FCEBB6;">
+                    <div style="font-size:1.8rem; font-weight:700; font-family:'DM Serif Display'; color:#D4A373;">設計準則與技術決策</div>
+                </div>
+                <div class="chapter-body">
+                    <p>核心在於「正確預估流量」並「提供安全輸送能力」。這不僅是套用公式，而是對每一個參數進行風險評估後的決策。</p>
+                    
+                    <h3>3.1 流量與水力設計：參數選定</h3>
+                    <p>依據《下水道系統設計及解說》，必須以<strong><span class="def-link" onclick="openDef('qmh')">計畫最大時污水量 ($Q_{mh}$)</span></strong> 作為設計基礎。</p>
+                    <div class="math-box">
+                        $$Q_{mh} = Q_{avg} \times PF + Q_{inf}$$
+                        $$Q_{mh} = (\text{計畫人口} \times \text{單位污水量}) \times \text{尖峰係數} + \text{地下水入滲量}$$
+                    </div>
+                    <div class="note-box">
+                        <h4>1. 計畫人口 ($P$)</h4>
+                        <p>不能僅看現況，需依都市計畫飽和密度推估。本案數據：六甲頂 260 人/公頃。</p>
+                        <hr style="border:0; border-top:1px dashed #ddd; margin:15px 0;">
+                        
+                        <h4>2. <span class="def-link" onclick="openDef('lpcd')">單位污水量 ($q$)</span></h4>
+                        <p>$250 \text{ (LPCD)} \times 0.9 \text{ (轉換率)} = \mathbf{225 \text{ LPCD}}$</p>
+                        <hr style="border:0; border-top:1px dashed #ddd; margin:15px 0;">
+                        
+                        <h4>3. <span class="def-link" onclick="openDef('pf')">尖峰係數 ($PF$)</span></h4>
+                        <p>設計用「平均流量的 2~4 倍」來應付早晚尖峰，防止滿管回冒。</p>
+                        <hr style="border:0; border-top:1px dashed #ddd; margin:15px 0;">
+                        
+                        <h4>4. 地下水入滲量 ($Q_{inf}$)</h4>
+                        <p><span style="color:var(--color-rose); font-weight:700;">採高標 15%</span>。因本區地下水位極高，需預留安全裕度。</p>
+                    </div>
+
+                    <h3>3.1.2 <span class="def-link" onclick="openDef('manning')">曼寧公式</span> ($n$值) 實務校正</h3>
+                    <div class="table-container">
+                        <table class="styled-table">
+                            <thead><tr><th>管材</th><th>理論值</th><th>本案設計值</th></tr></thead>
+                            <tbody>
+                                <tr><td><span class="def-link" onclick="openDef('rcp')">RCP (鋼筋混凝土)</span></td><td>0.013</td><td><strong>0.015</strong></td></tr>
+                                <tr><td><span class="def-link" onclick="openDef('prcp')">PRCP (樹脂混凝土)</span></td><td>0.011</td><td><strong>0.014</strong></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p style="color:#888; font-size:0.9rem; margin-top:0.5rem;">*理由：考慮施工誤差、生物膜(Slime)及泥沙沉積。</p>
+
+                    <h3>3.2 工法選擇決策矩陣</h3>
+                    <div class="table-container">
+                        <table class="styled-table">
+                            <thead><tr><th width="20%">評估因子</th><th>明挖工法</th><th>推進工法</th></tr></thead>
+                            <tbody>
+                                <tr><td><strong>埋設深度</strong></td><td>淺埋 ($< 2.5\sim 3.0\text{m}$)</td><td>深埋 ($\ge 2.5\sim 3.0\text{m}$)</td></tr>
+                                <tr><td><strong>交通影響</strong></td><td>高</td><td>低</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="risk-box">
+                        <span style="font-weight:800; color:var(--color-rose); font-size:1.1rem; display:block; margin-bottom:10px;">★ 推進機頭選型關鍵</span>
+                        <p><strong>1. 卵礫石層：</strong>唯一推薦 <span style="background:#FFCDB2; padding:0 5px;">泥濃式</span>。需配備破碎滾刀。</p>
+                        <p><strong>2. 流砂/高地下水：</strong>推薦泥水式或土壓平衡式。</p>
+                        <p><strong>3. 軟弱黏土：</strong>採 EPB 並注入分散劑，防止<span class="def-link" onclick="openDef('clogging')">鏡面效應</span>。</p>
+                    </div>
+
+                    <h3>3.3 管材選用原則</h3>
+                    <ul style="list-style:none; padding-left:0;">
+                        <li style="margin-bottom:1.5rem;"><strong>選項一：PRCP</strong> <span style="background:#E8F5E9; color:#4CAF50; font-size:0.8rem; padding:2px 8px; border-radius:4px;">本案首選</span><br>抗壓強、表面滑、耐腐蝕。</li>
+                        <li style="margin-bottom:1.5rem;"><strong>選項二：RCP</strong><br>需達 Class 4 強度。缺點是重、易腐蝕。</li>
+                        <li style="margin-bottom:1.5rem;"><strong>明挖管材：</strong><span class="def-link" onclick="openDef('flexible')">柔性管 (PVC/HDPE)</span>。<br>利用<span class="def-link" onclick="openDef('soilpipe')">管-土互制作用</span>承受載重。</li>
+                    </ul>
+                </div>
+            </article>
+        </section>
+
+        <section id="view-phase4" class="view-section">
+            <header>
+                <div style="font-size:0.9rem; color:#5C5C5C; font-weight:700; margin-bottom:10px; letter-spacing:1px;">LEARNING MODULE</div>
+                <h1>Phase 04: <br><span style="color:#5C5C5C;">Construction Planning</span></h1>
+            </header>
+            <article>
+                <div class="chapter-header" style="background:#F3F4F6; border-bottom:1px dashed #E5E7EB;">
+                    <div style="font-size:1.8rem; font-weight:700; font-family:'DM Serif Display'; color:#2D2D2D;">施工方案與障礙排除</div>
+                </div>
+                <div class="chapter-body">
+                    <p>如果說設計是「紙上談兵」，施工就是「短兵相接」。必須在「地下管線叢林」與「地面車流」夾縫中求生存。</p>
+                    <div class="tab-nav">
+                        <button class="tab-btn active" onclick="switchInnerTab('p4-tab1', this)">管線障礙</button>
+                        <button class="tab-btn" onclick="switchInnerTab('p4-tab2', this)">交通維持</button>
+                        <button class="tab-btn" onclick="switchInnerTab('p4-tab3', this)">監測保護</button>
+                    </div>
+                    
+                    <div id="p4-tab1" class="inner-tab-content active">
+                        <h3>4.1 地下管線障礙處理：立體空間的博弈</h3>
+                        <div class="note-box" style="border-left-color:#5C5C5C;">
+                            <h4>4.1.1 管線衝突處理原則 (Hierarchy of Rights)</h4>
+                            <p><strong>第一級：不可遷移</strong><br>• <strong><span class="def-link" onclick="openDef('gravity')">重力流管線</span> (雨水箱涵)</strong>：重力流無法爬坡。<br>• <strong>特高壓電 (161kV)</strong>：遷移成本天價。<br><span style="font-weight:700; color:var(--color-rose);">對策：污水管必須閃避。</span></p>
+                            <hr style="border:0; border-top:1px dashed #ddd; margin:15px 0;">
+                            <p><strong>第二級：困難遷移</strong><br>大口徑自來水幹管 (>500mm)、主要電信幹管。原則閃避。</p>
+                        </div>
+                        <h4>4.1.2 障礙處理三大戰術</h4>
+                        <ul style="list-style:none; padding-left:0;">
+                            <li style="margin-bottom:1.5rem;"><strong>戰術一：閃避 (Avoidance)</strong><br>平面調整工作井位置；或立體調整壓低高程。</li>
+                            <li style="margin-bottom:1.5rem;"><strong>戰術二：穿越 (Crossing)</strong><br>原則採<strong>「下方穿越」</strong>。<span class="def-link" onclick="openDef('clearance')">安全淨距</span>需 $\ge 30\sim 50\text{cm}$。<span class="def-link" onclick="openDef('siphon')">倒虹吸</span>為下下策。</li>
+                            <li style="margin-bottom:1.5rem;"><strong>戰術三：保護 (Protection)</strong><br>進行<span class="def-link" onclick="openDef('trialpit')">試挖</span>驗證高程。</li>
+                        </ul>
+                    </div>
+
+                    <div id="p4-tab2" class="inner-tab-content">
+                        <h3>4.2 交通維持計畫 (Traffic Management)</h3>
+                        <p>需依據<span class="def-link" onclick="openDef('los')">道路服務水準 (LOS)</span> 決策。</p>
+                        <h4>4.2.1 工區分級與標準佈設</h4>
+                        <div class="table-container">
+                            <table class="styled-table">
+                                <thead><tr><th>分級</th><th>情境</th><th>佈設重點</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Type I</strong></td><td>路側施工</td><td>引導機慢車靠左。</td></tr>
+                                    <tr><td><strong>Type II</strong></td><td>封閉一車道</td><td>設置<strong><span class="def-link" onclick="openDef('taper')">漸變段</span></strong> (Taper) 引導車流。</td></tr>
+                                    <tr><td><strong>Type III</strong></td><td>道路中心</td><td>雙邊通車。</td></tr>
+                                    <tr><td><strong>Type IV</strong></td><td>路口施工</td><td>檢核大車轉彎半徑。</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="note-box">
+                            <h4>4.2.2 施工時間策略</h4>
+                            <p><strong>• 策略一：日間施工 (標準模式)</strong><br>適用絕大多數道路。</p>
+                            <p><strong>• 策略二：夜間施工 (例外模式)</strong><br>適用台1線等要道。採<strong>「修補式施工」</strong>：22:00 開挖 → 06:00 蓋上<span class="def-link" onclick="openDef('deck')">覆工板</span>。</p>
+                        </div>
+                    </div>
+
+                    <div id="p4-tab3" class="inner-tab-content">
+                        <h3>4.3 損鄰防治與監測</h3>
+                        <div class="risk-box" style="background:white; border:1px solid #EEE;">
+                            <h4>4.3.1 現況鑑定 (工程師的保命符)</h4>
+                            <p>施工前需針對開挖深度 1.5 倍範圍內建物，委託公會拍照存證。</p>
+                        </div>
+                        <h4>4.3.2 監測儀器佈設</h4>
+                        <ul style="list-style:none; padding-left:0;">
+                            <li>• <strong><span class="def-link" onclick="openDef('tilt')">傾度盤</span></strong>：安裝於建物柱子。</li>
+                            <li>• <strong>沉陷觀測點</strong>：監控地面槽形沉陷。</li>
+                        </ul>
+                        <h4>4.3.3 監測管理紅綠燈</h4>
+                        <div class="table-container">
+                            <table class="styled-table">
+                                <thead><tr><th>等級</th><th>數值範例</th><th>行動對策</th></tr></thead>
+                                <tbody>
+                                    <tr><td><span class="status-badge status-green">管理值</span></td><td>$\le 2.8\text{cm}$</td><td>安全範圍。</td></tr>
+                                    <tr><td><span class="status-badge status-yellow">警戒值</span></td><td>$2.8 \sim 3.6\text{cm}$</td><td>加密監測 (每日2次)。</td></tr>
+                                    <tr><td><span class="status-badge status-red">行動值</span></td><td>$> 4.0\text{cm}$</td><td><strong>立即停工</strong>。</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </section>
+
+        <section id="view-phase5" class="view-section">
+            <header>
+                <div style="font-size:0.9rem; color:#84A98C; font-weight:700; margin-bottom:10px; letter-spacing:1px;">LEARNING MODULE</div>
+                <h1>Phase 05: <br><span style="color:#84A98C;">Sustainability</span></h1>
+            </header>
+
+            <article>
+                <div class="chapter-header" style="background:#F0FDF4; border-bottom:1px dashed #BBF7D0;">
+                    <div style="font-size:1.8rem; font-weight:700; font-family:'DM Serif Display'; color:#355E3B;">環境保護與節能減碳</div>
+                </div>
+                <div class="chapter-body">
+                    <p>在 ESG 指標納入評估後，環保已是核心價值。本章探討<span class="def-link" onclick="openDef('ecocheck')">生態檢核</span>與全生命週期減碳。</p>
+
+                    <h3>5.1 生態檢核：工程與環境的對話</h3>
+                    <p>依據「公共工程生態檢核注意事項」，執行標準化決策流程。</p>
+                    
+                    <div class="note-box" style="border-left-color:#84A98C; background:#F7FDF9;">
+                        <h4>步驟一：資料蒐集 (Inventory)</h4>
+                        <p>• <strong>指認紅區：</strong>本案全數位於都市計畫區既有道路，屬「一般區」。<br>
+                        • <strong>文化資產：</strong>指認出「原台南農校日式宿舍群」及「網寮疑似遺址」，列為保全對象。</p>
+                    </div>
+
+                    <h4>步驟三：保育對策研擬 (四層級)</h4>
+                    <div class="table-container">
+                        <table class="styled-table">
+                            <thead><tr><th width="20%">策略</th><th>定義</th><th>本案應用</th></tr></thead>
+                            <tbody>
+                                <tr><td><strong>1. 迴避 (Avoid)</strong></td><td>更改路線避開敏感區。</td><td>管線繞道避開遺址核心區。</td></tr>
+                                <tr><td><strong>2. 縮小 (Minimize)</strong></td><td>縮減工程規模。</td><td>採<span class="def-link" onclick="openDef('microtunnel')">微型推進</span>，減少工作井開挖。</td></tr>
+                                <tr><td><strong>3. 減輕 (Mitigate)</strong></td><td>降低衝擊程度。</td><td>設置隔音牆、低震動機具。</td></tr>
+                                <tr><td><strong>4. 補償 (Compensate)</strong></td><td>異地重建或復育。</td><td>行道樹補植。</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3>5.2 節能減碳策略：淨零排放實踐</h3>
+                    <p>依據《基本設計報告》，減碳需從設計源頭做起。</p>
+
+                    <h4>5.2.1 設計面：決定 70% 碳排</h4>
+                    <div class="risk-box" style="background:#F0FDF4; border-color:#86EFAC;">
+                        <span style="font-weight:700; color:#15803D; font-size:1.1rem; display:block; margin-bottom:5px;">策略一：重力流優先 (Gravity Flow)</span>
+                        <p>減少中繼揚水站設置。雖然增加埋深，但從<span class="def-link" onclick="openDef('lcc')">全生命週期成本 (LCC)</span> 來看，減少 50 年電力消耗更減碳。</p>
+                    </div>
+                    <div class="risk-box" style="background:#F0FDF4; border-color:#86EFAC;">
+                        <span style="font-weight:700; color:#15803D; font-size:1.1rem; display:block; margin-bottom:5px;">策略二：長距離推進</span>
+                        <p>將井距提升至 100~120m。少挖一個井 = 少 200m³ 土方開挖 + 少混凝土底版。</p>
+                    </div>
+
+                    <h4>5.2.2 材料面：循環經濟</h4>
+                    <ul style="list-style:none; padding-left:0;">
+                        <li style="margin-bottom:1rem;"><strong>• 耐久性管材：</strong>選用 PRCP (壽命50年)，避免二次開挖更換，就是最環保。</li>
+                        <li style="margin-bottom:1rem;"><strong>• 再生粒料：</strong>管溝回填材料 <span class="def-link" onclick="openDef('clsm')">CLSM</span> 需摻配焚化底渣，解決廢棄物去化。</li>
+                    </ul>
+
+                    <h4>5.2.3 施工面：能源管理</h4>
+                    <ul style="list-style:none; padding-left:0;">
+                        <li><strong>• 土方挖填平衡：</strong>工區內設置暫置場，A區良質土直接運至B區回填，減少砂石車油耗。</li>
+                        <li><strong>• 市電取代發電機：</strong>工地優先申請臨時接電，減少柴油污染。</li>
+                        <li><strong>• 鋼材循環：</strong>擋土設施全數租賃，完工回收再利用 (<span class="def-link" onclick="openDef('circular')">循環經濟</span>)。</li>
+                    </ul>
+
+                </div>
+            </article>
+        </section>
+
+    </main>
+
+    <script>
+        // ==========================================
+        // ★★★ 名詞解釋資料庫 (Phase 1-5 完整版) ★★★
+        // ==========================================
+        const glossary = {
+            "masterplan": { title: "污水下水道系統規劃 (Master Plan)", desc: "都市污水處理的最高指導原則與長期願景。通常設定目標年為 20~30 年，定義集污區範圍、處理廠位置與主幹管路線，是爭取預算與分期建設的依據。" },
+            "implplan": { title: "實施計畫 (Implementation Plan)", desc: "依據系統規劃制定的具體執行方案，通常以 5-10 年為一期。詳細列出每期的工程範圍、預算編列及預期效益，需經中央核定後才能動支經費。" },
+            "ds": { title: "設計監造合併", desc: "將設計與監造工作委託給同一家廠商。優點是設計者最了解原意，若施工遇到障礙（如地下管線），能快速進行變更設計，減少權責爭議。" },
+            "trialpit": { title: "試挖 (Trial Pit)", desc: "在工程設計或開工前，於預定路徑上挖掘小坑洞。目的在確認地下管線的實際位置、深度與地質狀況，以避免工作井位置衝突或挖斷管線。" },
+            "gis": { title: "GIS (地理資訊系統)", desc: "Geographic Information System。將地下管線、設施位置等空間數據數位化建檔。能協助工程師在電腦地圖上管理複雜的地下管網。" },
+            "neighbor": { title: "鄰房鑑定", desc: "施工前委託公正第三方（如公會）對沿線建築物進行現況調查（拍照、紀錄裂縫）。若施工造成損鄰，此報告為釐清責任與賠償的重要依據。" },
+            "nvalue": { title: "N值 (Standard Penetration Test N-Value)", desc: "標準貫入試驗值，代表土壤的「硬度」或「緊密度」。數值越小土越軟（N<4 為極軟弱），數值越大土越硬（N>50 為堅硬或卵礫石）。" },
+            "quicksand": { title: "流砂 (Running Sand)", desc: "飽含地下水的鬆散砂土層。開挖時若水壓平衡未控制好，砂土會像液體一樣流動湧入工作井，極易造成路面塌陷。" },
+            "backfill": { title: "背填灌漿 (Backfill Grouting)", desc: "推進管線施工時，管壁與土層間會產生空隙。必須同步注入漿液填滿這些空隙，以防止上方地層下陷。" },
+            "epb": { title: "土壓平衡式 (EPB)", desc: "Earth Pressure Balance。利用切削下来的土砂充滿機頭土艙，透過螺旋排土器控制壓力，來平衡前方的地下水壓與土壓，防止崩塌。" },
+            "gravel": { title: "卵礫石層 (Gravel)", desc: "含有大量圓形石塊的地層。石塊硬度高且孔隙大，容易卡死掘進機頭或導致泥水流失（逸漿），是推進工程中最棘手的地質之一。" },
+            "mud": { title: "泥濃式推進 (Mud Dense)", desc: "使用高濃度、高黏滯性的特製泥漿。能有效將卵礫石「包覆」並懸浮運出，且泥漿不易流失，是卵礫石層的首選工法。" },
+            "qmh": { title: "計畫最大時污水量 (Qmh)", desc: "Maximum Hourly Flow。設計管渠容量的基準。考量一天中用水量最高的時段（如早晚尖峰）再加上地下水入滲量，確保管線不會滿溢。" },
+            "lpcd": { title: "單位污水量 (LPCD)", desc: "Liters Per Capita per Day。平均每人每天產生的污水公升數。計算公式為：每人用水量 ×污水轉換率（通常為 0.9）。" },
+            "pf": { title: "尖峰係數 (Peaking Factor)", desc: "最大時流量與平均日流量的比值。人口越少的社區，大家作息越同步，瞬間用水波動越大，PF 值通常介於 2~4 之間。" },
+            "manning": { title: "曼寧公式 (Manning Formula)", desc: "土木水利工程計算明渠流速最常用的公式。流速 V 取決於粗糙係數 n、水力半徑 R 與坡度 S。" },
+            "rcp": { title: "鋼筋混凝土管 (RCP)", desc: "Reinforced Concrete Pipe。傳統且常用的管材。優點是便宜、強度高；缺點是重、表面較粗糙、且易受污水中的硫化氫腐蝕。" },
+            "prcp": { title: "聚酯樹脂混凝土管 (PRCP)", desc: "Polyester Resin Concrete Pipe。以樹脂取代水泥。強度是 RCP 的 2~3 倍，表面極光滑 (n值低)，耐酸鹼腐蝕，適合長距離推進。" },
+            "clogging": { title: "鏡面效應 (Clogging)", desc: "在黏土層掘進時，黏性土糊在刀盤切削面上，變成像光華的鏡面一樣空轉，導致無法切削前進。" },
+            "slime": { title: "生物膜效應 (Slime)", desc: "污水管使用一段時間後，管壁滋生的一層黏滑生物膜。這會改變管壁粗糙度，影響水流速度，設計時需考量此因素修正 n 值。" },
+            "tractive": { title: "掃流力 (Tractive Force)", desc: "水流對管壁產生的剪應力。必須足夠大才能將沉積在管底的泥沙帶走，防止淤積。" },
+            "crowncorr": { title: "冠部腐蝕 (Crown Corrosion)", desc: "污水管頂部因通風不良產生硫化氫氣體，與凝結水結合形成硫酸，腐蝕混凝土管頂的現象。" },
+            "flexible": { title: "柔性管", desc: "如 PVC 或 HDPE 管。受壓時會產生微小變形，利用側向變形擠壓周圍土壤產生被動土壓來支撐載重，非靠自身剛性硬抗。" },
+            "soilpipe": { title: "管-土互制作用", desc: "柔性管埋設後，管體與周圍回填土壤共同承受載重的機制。施工時的回填夯實品質是關鍵。" },
+            "gravity": { title: "重力流管線", desc: "依靠位能差流動，需保持特定坡度，高程受限大。如雨水、污水管。" },
+            "pressure": { title: "壓力流管線", desc: "依靠泵浦加壓，不受坡度限制，可透過彎頭靈活調整。如自來水、瓦斯管。" },
+            "siphon": { title: "倒虹吸 (Inverted Siphon)", desc: "利用連通管原理，讓水流先下潛穿過障礙物再爬升。因易淤積，僅在無法重力穿越時使用。" },
+            "clearance": { title: "安全淨距", desc: "兩管線間需保持的最小距離。污水穿雨水箱涵建議淨距 >= 30~50cm。" },
+            "los": { title: "道路服務水準 (Level of Service, LOS)", desc: "評估交通順暢度，從A(自由)到F(塞車)。施工期間需維持在 LOS E 以上。" },
+            "taper": { title: "漸變段 (Taper)", desc: "車道縮減處，利用交通錐引導車流平順變換車道的過渡區。" },
+            "deck": { title: "覆工板 (Deck Plate)", desc: "高強度鋼板，用於臨時覆蓋開挖坑洞，讓車輛得以通行。" },
+            "tilt": { title: "傾度盤 (Tiltmeter)", desc: "安裝於建物牆面，監測是否因施工造成傾斜，判斷基準為角變量。" },
+            "ecocheck": { title: "生態檢核 (Ecological Checklist)", desc: "在工程各階段，透過迴避、縮小、減輕、補償四步驟，減輕對生態環境與文化資產衝擊的管理機制。" },
+            "lcc": { title: "全生命週期成本 (Life Cycle Cost)", desc: "設施從規劃、建造到維護、拆除的總成本。PRCP 雖建造成本高，但維護費低，LCC 反而較低。" },
+            "clsm": { title: "CLSM (控制性低強度回填材料)", desc: "流動性佳、免夯實的回填材料。常用於管溝回填，並可摻配再生粒料，是綠色工程的重要應用。" },
+            "circular": { title: "循環經濟 (Circular Economy)", desc: "將資源利用最大化。如土方挖填平衡、鋼板樁租賃回收，皆是將廢棄物轉為資源的實踐。" },
+            "microtunnel": { title: "微型推進 (Micro-tunneling)", desc: "適用於小管徑的遙控鑽掘技術。對地表干擾極小，保護植被與減少噪音，是市區生態友善工法。" }
+        };
+
+        // Modal Logic
+        function openDef(key) {
+            const data = glossary[key];
+            if(data) {
+                document.getElementById('modal-term-title').innerText = data.title;
+                document.getElementById('modal-term-desc').innerText = data.desc;
+                document.getElementById('glossary-modal').classList.add('active');
+            }
+        }
+
+        function closeModal(event) {
+            document.getElementById('glossary-modal').classList.remove('active');
+        }
+
+        // Sidebar & Dropdown Logic
+        function toggleDropdown(menuId) {
+            const menu = document.getElementById(menuId);
+            const parentBtn = document.getElementById('btn-learn');
+            if (menu.style.display === 'flex') {
+                menu.style.display = 'none';
+                parentBtn.classList.remove('open');
+            } else {
+                menu.style.display = 'flex';
+                parentBtn.classList.add('open');
+            }
+        }
+
+        // Tab Switching Logic (Inner Tabs)
+        function switchInnerTab(tabId, btn) {
+            // Find parent section to scope the query
+            const parentSection = btn.closest('.view-section');
+            parentSection.querySelectorAll('.inner-tab-content').forEach(el => el.classList.remove('active'));
+            parentSection.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        // Main Navigation Logic (已更新：包含 tools 切換)
+        function navigate(targetId) {
+            // 1. Remove active states
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.sub-item').forEach(el => el.classList.remove('active'));
+
+            // 2. Add active state to View
+            const viewId = 'view-' + targetId;
+            const viewEl = document.getElementById(viewId);
+            if(viewEl) viewEl.classList.add('active');
+
+            // 3. Add active state to Sidebar Item
+            // Check if it's a main nav item or sub item
+            const mainNavItem = document.querySelector(`.nav-item[data-target="${targetId}"]`);
+            if (mainNavItem) {
+                mainNavItem.classList.add('active');
+                
+                // ★★★ 新增：如果切換到 Tools，預設載入第一個檔案 ★★★
+                if(targetId === 'tools') {
+                    // 檢查容器是否還是空的，如果是空的才載入預設值
+                    if(document.getElementById('markdown-container').innerText.includes('請點擊')) {
+                        loadMarkdown('QGIS.md', document.querySelector('#view-tools .tab-btn'));
+                    }
+                }
+
+            } else {
+                // It might be a sub-item
+                const subItem = document.querySelector(`.sub-item[data-target="${targetId}"]`);
+                if(subItem) {
+                    subItem.classList.add('active');
+                    // Ensure parent dropdown is open and active
+                    const parentBtn = document.getElementById('btn-learn');
+                    parentBtn.classList.add('active');
+                    parentBtn.classList.add('open');
+                    document.getElementById('menu-learn').style.display = 'flex';
+                }
+            }
+            
+            // 4. Mobile: Close sidebar after click
+            toggleSidebar(false);
+
+            // 5. Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Mobile Sidebar Toggle
+        function toggleSidebar(forceState) {
+            const sidebar = document.getElementById('main-sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            
+            if (typeof forceState !== 'undefined') {
+                if(forceState) {
+                    sidebar.classList.add('mobile-active');
+                    overlay.classList.add('active');
+                } else {
+                    sidebar.classList.remove('mobile-active');
+                    overlay.classList.remove('active');
+                }
+            } else {
+                sidebar.classList.toggle('mobile-active');
+                overlay.classList.toggle('active');
+            }
+        }
+
+        // ★★★ 新增：讀取並轉換 Markdown 的核心功能 ★★★
+        function loadMarkdown(filename, btnElement) {
+            const container = document.getElementById('markdown-container');
+            const path = './notes/' + filename; // 檔案路徑
+
+            // 處理按鈕樣式
+            if(btnElement) {
+                // 只針對 #view-tools 裡面的按鈕移除 active
+                document.querySelectorAll('#view-tools .tab-btn').forEach(btn => btn.classList.remove('active'));
+                btnElement.classList.add('active');
+            }
+
+            container.innerHTML = '<p style="color:#aaa;">Loading content...</p>';
+
+            // 抓取檔案
+            fetch(path)
+                .then(response => {
+                    if (!response.ok) throw new Error("找不到檔案");
+                    return response.text();
+                })
+                .then(text => {
+                    // 使用 marked.js 轉換
+                    container.innerHTML = marked.parse(text);
+                    // 如果有數學公式，重新渲染
+                    if(window.MathJax) MathJax.typesetPromise([container]);
+                })
+                .catch(err => {
+                    container.innerHTML = `<p style="color:red;">讀取失敗：${err.message}<br>請確認 notes 資料夾內是否有 <b>${filename}</b> 檔案。</p>`;
+                });
+        }
+    </script>
+
+</body>
+</html>
