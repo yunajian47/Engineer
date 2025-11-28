@@ -747,11 +747,9 @@
             const box = document.getElementById("login-box");
 
             if (input === CORRECT_PASSWORD) {
-                // 密碼正確：淡出並隱藏
                 overlay.style.opacity = "0";
                 overlay.style.visibility = "hidden";
             } else {
-                // 密碼錯誤：清空並搖晃
                 box.classList.add("shake");
                 document.getElementById("password-input").value = "";
                 setTimeout(() => { box.classList.remove("shake"); }, 500);
@@ -759,80 +757,69 @@
         }
 
         // ==========================================
-        // ★★★ Markdown 圖片自動修復 (Image Fix) - 已修正空格與中文問題 ★★★
+        // ★★★ Markdown 圖片自動修復 (Image Fix) ★★★
         // ==========================================
         const renderer = {
             image(href, title, text) {
-                // 1. 路徑補全邏輯
                 if (href && !href.startsWith('http')) {
-                    // 先解碼避免重複編碼導致錯誤
                     try { href = decodeURI(href); } catch(e) {}
-
                     if (!href.startsWith('notes/')) {
                         if(href.startsWith('所有圖片/')) {
                             href = 'notes/' + href;
                         } else {
-                            // 預設指向 "notes/所有圖片/"
                             href = 'notes/所有圖片/' + href;
                         }
                     }
                 }
-
-                // 2. ★關鍵修正★：將路徑進行 URL 編碼
-                // 這會把 "Pasted image" 變成 "Pasted%20image"，解決斷圖問題
                 const encodedHref = encodeURI(href);
-
                 return `<img src="${encodedHref}" alt="${text}" style="max-width:100%; border-radius:12px; margin:1rem 0; box-shadow:0 4px 10px rgba(0,0,0,0.1);">`;
             }
         };
-        // 啟用自定義渲染器
         marked.use({ renderer });
 
-
         // ==========================================
-        // ★★★ 名詞解釋資料庫 (Glossary) - 保持不變 ★★★
+        // ★★★ 資料庫與 UI 邏輯 ★★★
         // ==========================================
         const glossary = {
-            "masterplan": { title: "污水下水道系統規劃 (Master Plan)", desc: "都市污水處理的最高指導原則與長期願景。通常設定目標年為 20~30 年，定義集污區範圍、處理廠位置與主幹管路線，是爭取預算與分期建設的依據。" },
-            "implplan": { title: "實施計畫 (Implementation Plan)", desc: "依據系統規劃制定的具體執行方案，通常以 5-10 年為一期。詳細列出每期的工程範圍、預算編列及預期效益，需經中央核定後才能動支經費。" },
-            "ds": { title: "設計監造合併", desc: "將設計與監造工作委託給同一家廠商。優點是設計者最了解原意，若施工遇到障礙（如地下管線），能快速進行變更設計，減少權責爭議。" },
-            "trialpit": { title: "試挖 (Trial Pit)", desc: "在工程設計或開工前，於預定路徑上挖掘小坑洞。目的在確認地下管線的實際位置、深度與地質狀況，以避免工作井位置衝突或挖斷管線。" },
-            "gis": { title: "GIS (地理資訊系統)", desc: "Geographic Information System。將地下管線、設施位置等空間數據數位化建檔。能協助工程師在電腦地圖上管理複雜的地下管網。" },
-            "neighbor": { title: "鄰房鑑定", desc: "施工前委託公正第三方（如公會）對沿線建築物進行現況調查（拍照、紀錄裂縫）。若施工造成損鄰，此報告為釐清責任與賠償的重要依據。" },
-            "nvalue": { title: "N值 (Standard Penetration Test N-Value)", desc: "標準貫入試驗值，代表土壤的「硬度」或「緊密度」。數值越小土越軟（N<4 為極軟弱），數值越大土越硬（N>50 為堅硬或卵礫石）。" },
-            "quicksand": { title: "流砂 (Running Sand)", desc: "飽含地下水的鬆散砂土層。開挖時若水壓平衡未控制好，砂土會像液體一樣流動湧入工作井，極易造成路面塌陷。" },
-            "backfill": { title: "背填灌漿 (Backfill Grouting)", desc: "推進管線施工時，管壁與土層間會產生空隙。必須同步注入漿液填滿這些空隙，以防止上方地層下陷。" },
-            "epb": { title: "土壓平衡式 (EPB)", desc: "Earth Pressure Balance。利用切削下来的土砂充滿機頭土艙，透過螺旋排土器控制壓力，來平衡前方的地下水壓與土壓，防止崩塌。" },
-            "gravel": { title: "卵礫石層 (Gravel)", desc: "含有大量圓形石塊的地層。石塊硬度高且孔隙大，容易卡死掘進機頭或導致泥水流失（逸漿），是推進工程中最棘手的地質之一。" },
-            "mud": { title: "泥濃式推進 (Mud Dense)", desc: "使用高濃度、高黏滯性的特製泥漿。能有效將卵礫石「包覆」並懸浮運出，且泥漿不易流失，是卵礫石層的首選工法。" },
-            "qmax": { title: "計畫最大日污水量 (Qmax)", desc: "Maximum Hourly Flow。設計管渠容量的基準。考量一天中用水量最高的時段（如早晚尖峰）再加上地下水入滲量，確保管線不會滿溢。" },
-            "lpcd": { title: "單位污水量 (LPCD)", desc: "Liters Per Capita per Day。平均每人每天產生的污水公升數。計算公式為：每人用水量 ×污水轉換率（通常為 0.9）。" },
-            "pf": { title: "尖峰係數 (Peaking Factor)", desc: "最大時流量與平均日流量的比值。人口越少的社區，大家作息越同步，瞬間用水波動越大，PF 值通常介於 2~4 之間。" },
-            "manning": { title: "曼寧公式 (Manning Formula)", desc: "土木水利工程計算明渠流速最常用的公式。流速 V 取決於粗糙係數 n、水力半徑 R 與坡度 S。" },
-            "rcp": { title: "鋼筋混凝土管 (RCP)", desc: "Reinforced Concrete Pipe。傳統且常用的管材。優點是便宜、強度高；缺點是重、表面較粗糙、且易受污水中的硫化氫腐蝕。" },
-            "prcp": { title: "聚酯樹脂混凝土管 (PRCP)", desc: "Polyester Resin Concrete Pipe。以樹脂取代水泥。強度是 RCP 的 2~3 倍，表面極光滑 (n值低)，耐酸鹼腐蝕，適合長距離推進。" },
-            "clogging": { title: "鏡面效應 (Clogging)", desc: "在黏土層掘進時，黏性土糊在刀盤切削面上，變成像光華的鏡面一樣空轉，導致無法切削前進。" },
-            "slime": { title: "生物膜效應 (Slime)", desc: "污水管使用一段時間後，管壁滋生的一層黏滑生物膜。這會改變管壁粗糙度，影響水流速度，設計時需考量此因素修正 n 值。" },
-            "tractive": { title: "掃流力 (Tractive Force)", desc: "水流對管壁產生的剪應力。必須足夠大才能將沉積在管底的泥沙帶走，防止淤積。" },
-            "crowncorr": { title: "冠部腐蝕 (Crown Corrosion)", desc: "污水管頂部因通風不良產生硫化氫氣體，與凝結水結合形成硫酸，腐蝕混凝土管頂的現象。" },
-            "flexible": { title: "柔性管", desc: "如 PVC 或 HDPE 管。受壓時會產生微小變形，利用側向變形擠壓周圍土壤產生被動土壓來支撐載重，非靠自身剛性硬抗。" },
-            "soilpipe": { title: "管-土互制作用", desc: "柔性管埋設後，管體與周圍回填土壤共同承受載重的機制。施工時的回填夯實品質是關鍵。" },
-            "gravity": { title: "重力流管線", desc: "依靠位能差流動，需保持特定坡度，高程受限大。如雨水、污水管。" },
-            "pressure": { title: "壓力流管線", desc: "依靠泵浦加壓，不受坡度限制，可透過彎頭靈活調整。如自來水、瓦斯管。" },
-            "siphon": { title: "倒虹吸 (Inverted Siphon)", desc: "利用連通管原理，讓水流先下潛穿過障礙物再爬升。因易淤積，僅在無法重力穿越時使用。" },
-            "clearance": { title: "安全淨距", desc: "兩管線間需保持的最小距離。污水穿雨水箱涵建議淨距 >= 30~50cm。" },
-            "los": { title: "道路服務水準 (Level of Service, LOS)", desc: "評估交通順暢度，從A(自由)到F(塞車)。施工期間需維持在 LOS E 以上。" },
-            "taper": { title: "漸變段 (Taper)", desc: "車道縮減處，利用交通錐引導車流平順變換車道的過渡區。" },
-            "deck": { title: "覆工板 (Deck Plate)", desc: "高強度鋼板，用於臨時覆蓋開挖坑洞，讓車輛得以通行。" },
-            "tilt": { title: "傾度盤 (Tiltmeter)", desc: "安裝於建物牆面，監測是否因施工造成傾斜，判斷基準為角變量。" },
-            "ecocheck": { title: "生態檢核 (Ecological Checklist)", desc: "在工程各階段，透過迴避、縮小、減輕、補償四步驟，減輕對生態環境與文化資產衝擊的管理機制。" },
-            "lcc": { title: "全生命週期成本 (Life Cycle Cost)", desc: "設施從規劃、建造到維護、拆除的總成本。PRCP 雖建造成本高，但維護費低，LCC 反而較低。" },
-            "clsm": { title: "CLSM (控制性低強度回填材料)", desc: "流動性佳、免夯實的回填材料。常用於管溝回填，並可摻配再生粒料，是綠色工程的重要應用。" },
-            "circular": { title: "循環經濟 (Circular Economy)", desc: "將資源利用最大化。如土方挖填平衡、鋼板樁租賃回收，皆是將廢棄物轉為資源的實踐。" },
-            "microtunnel": { title: "微型推進 (Micro-tunneling)", desc: "適用於小管徑的遙控鑽掘技術。對地表干擾極小，保護植被與減少噪音，是市區生態友善工法。" }
+            "masterplan": { title: "污水下水道系統規劃 (Master Plan)", desc: "都市污水處理的最高指導原則與長期願景..." },
+            "implplan": { title: "實施計畫 (Implementation Plan)", desc: "依據系統規劃制定的具體執行方案..." },
+            "ds": { title: "設計監造合併", desc: "將設計與監造工作委託給同一家廠商..." },
+            "trialpit": { title: "試挖 (Trial Pit)", desc: "在工程設計或開工前，於預定路徑上挖掘小坑洞..." },
+            "gis": { title: "GIS (地理資訊系統)", desc: "Geographic Information System..." },
+            "neighbor": { title: "鄰房鑑定", desc: "施工前委託公正第三方進行現況調查..." },
+            "nvalue": { title: "N值", desc: "標準貫入試驗值，代表土壤的硬度..." },
+            "quicksand": { title: "流砂", desc: "飽含地下水的鬆散砂土層..." },
+            "backfill": { title: "背填灌漿", desc: "推進管線施工時，同步注入漿液填滿空隙..." },
+            "epb": { title: "土壓平衡式 (EPB)", desc: "利用切削下来的土砂充滿機頭土艙來平衡壓力..." },
+            "gravel": { title: "卵礫石層", desc: "含有大量圓形石塊的地層..." },
+            "mud": { title: "泥濃式推進", desc: "使用高濃度泥漿包覆卵礫石..." },
+            "qmax": { title: "計畫最大日污水量", desc: "設計管渠容量的基準..." },
+            "lpcd": { title: "單位污水量", desc: "平均每人每天產生的污水公升數..." },
+            "pf": { title: "尖峰係數", desc: "最大時流量與平均日流量的比值..." },
+            "manning": { title: "曼寧公式", desc: "計算明渠流速最常用的公式..." },
+            "rcp": { title: "鋼筋混凝土管", desc: "傳統管材，便宜但重..." },
+            "prcp": { title: "聚酯樹脂混凝土管", desc: "強度高、表面滑、耐腐蝕..." },
+            "clogging": { title: "鏡面效應", desc: "黏土層糊在刀盤上導致空轉..." },
+            "slime": { title: "生物膜效應", desc: "管壁滋生生物膜影響流速..." },
+            "tractive": { title: "掃流力", desc: "水流對管壁產生的剪應力..." },
+            "crowncorr": { title: "冠部腐蝕", desc: "硫化氫腐蝕管頂..." },
+            "flexible": { title: "柔性管", desc: "利用管土互制作用承受載重..." },
+            "soilpipe": { title: "管-土互制作用", desc: "管體與回填土共同承載..." },
+            "gravity": { title: "重力流管線", desc: "依靠位能差流動..." },
+            "pressure": { title: "壓力流管線", desc: "依靠泵浦加壓..." },
+            "siphon": { title: "倒虹吸", desc: "下潛穿越障礙物..." },
+            "clearance": { title: "安全淨距", desc: "兩管線間的最小距離..." },
+            "los": { title: "道路服務水準", desc: "評估交通順暢度..." },
+            "taper": { title: "漸變段", desc: "車道縮減處的過渡區..." },
+            "deck": { title: "覆工板", desc: "臨時覆蓋開挖坑洞的鋼板..." },
+            "tilt": { title: "傾度盤", desc: "監測建物傾斜..." },
+            "ecocheck": { title: "生態檢核", desc: "減輕工程對生態衝擊的管理機制..." },
+            "lcc": { title: "全生命週期成本", desc: "設施從建造到拆除的總成本..." },
+            "clsm": { title: "CLSM", desc: "控制性低強度回填材料..." },
+            "circular": { title: "循環經濟", desc: "資源利用最大化..." },
+            "microtunnel": { title: "微型推進", desc: "小管徑遙控鑽掘..." }
         };
 
-        // Modal Logic
         function openDef(key) {
             const data = glossary[key];
             if(data) {
@@ -846,7 +833,6 @@
             document.getElementById('glossary-modal').classList.remove('active');
         }
 
-        // Sidebar & Dropdown Logic
         function toggleDropdown(menuId) {
             const menu = document.getElementById(menuId);
             const parentBtn = document.getElementById('btn-learn');
@@ -859,7 +845,6 @@
             }
         }
 
-        // Tab Switching Logic (Inner Tabs)
         function switchInnerTab(tabId, btn) {
             const parentSection = btn.closest('.view-section');
             parentSection.querySelectorAll('.inner-tab-content').forEach(el => el.classList.remove('active'));
@@ -868,7 +853,6 @@
             btn.classList.add('active');
         }
 
-        // Main Navigation Logic
         function navigate(targetId) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
@@ -881,14 +865,11 @@
             const mainNavItem = document.querySelector(`.nav-item[data-target="${targetId}"]`);
             if (mainNavItem) {
                 mainNavItem.classList.add('active');
-                
-                // 如果切換到 Tools，預設載入第一個檔案
                 if(targetId === 'tools') {
                     if(document.getElementById('markdown-container').innerText.includes('請點擊')) {
                         loadMarkdown('QGIS.md', document.querySelector('#view-tools .tab-btn'));
                     }
                 }
-
             } else {
                 const subItem = document.querySelector(`.sub-item[data-target="${targetId}"]`);
                 if(subItem) {
@@ -903,11 +884,9 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Mobile Sidebar Toggle
         function toggleSidebar(forceState) {
             const sidebar = document.getElementById('main-sidebar');
             const overlay = document.getElementById('sidebar-overlay');
-            
             if (typeof forceState !== 'undefined') {
                 if(forceState) {
                     sidebar.classList.add('mobile-active');
@@ -923,32 +902,46 @@
         }
 
         // ==========================================
-        // ★★★ 核心：讀取並轉換 Markdown (已修復 Obsidian 格式 + 檔案路徑編碼) ★★★
+        // ★★★ 核心：讀取 Markdown (強健版) ★★★
         // ==========================================
         function loadMarkdown(filename, btnElement) {
             const container = document.getElementById('markdown-container');
             
-            // ★關鍵修正★：先組字串，再進行 URL 編碼
-            // 這會把 "CODiS 氣候觀測.md" 轉換成 "CODiS%20%E6%B0..."，讓 fetch 能正確抓到檔案
-            const rawPath = './notes/' + filename; 
-            const encodedPath = encodeURI(rawPath);
+            // 1. 檢查是否在本機開啟 (file://)
+            if (window.location.protocol === 'file:') {
+                container.innerHTML = `
+                    <div style="background:#FFF0F3; padding:2rem; border-radius:15px; border:1px solid #FFCDB2; text-align:center;">
+                        <h3 style="color:#E5989B;">⚠️ 無法讀取檔案 (CORS 限制)</h3>
+                        <p>瀏覽器禁止從硬碟直接讀取外部檔案。</p>
+                        <p>請將檔案上傳至 <b>GitHub Pages</b> 瀏覽，<br>或是使用 VS Code 的 "Live Server" 擴充功能。</p>
+                    </div>`;
+                return;
+            }
+
+            // 2. 處理路徑與快取 (移除 ./ 改用 notes/，並加上時間戳記)
+            const rawPath = 'notes/' + filename; 
+            const encodedPath = encodeURI(rawPath) + '?t=' + new Date().getTime();
 
             if(btnElement) {
                 document.querySelectorAll('#view-tools .tab-btn').forEach(btn => btn.classList.remove('active'));
                 btnElement.classList.add('active');
             }
 
-            container.innerHTML = '<div style="text-align:center; padding:2rem; color:#aaa;"><i class="fa-solid fa-spinner fa-spin"></i> Loading content...</div>';
+            container.innerHTML = '<div style="text-align:center; padding:2rem; color:#aaa;"><i class="fa-solid fa-spinner fa-spin"></i> 正在載入文件...</div>';
 
             fetch(encodedPath)
                 .then(response => {
-                    if (!response.ok) throw new Error("找不到檔案");
+                    if (!response.ok) {
+                        // 判斷 404 錯誤
+                        if(response.status === 404) throw new Error("404 Not Found (找不到檔案)");
+                        throw new Error(`HTTP Error ${response.status}`);
+                    }
                     return response.text();
                 })
                 .then(text => {
-                    // ★關鍵修正★：針對 Obsidian 的 ![[...]] 格式進行處理 (圖片路徑修復)
-                    text = text.replace(/!\[\[(.*?)\]\]/g, (match, filename) => {
-                        const cleanName = filename.split('/').pop();
+                    // 3. 處理 Obsidian 圖片語法
+                    text = text.replace(/!\[\[(.*?)\]\]/g, (match, fname) => {
+                        const cleanName = fname.split('/').pop();
                         const encodedName = encodeURI(cleanName);
                         return `![](notes/所有圖片/${encodedName})`;
                     });
@@ -958,7 +951,18 @@
                 })
                 .catch(err => {
                     console.error(err);
-                    container.innerHTML = `<p style="color:red; text-align:center;">讀取失敗：無法載入 <b>${filename}</b><br>請確認檔案是否已放入【notes】資料夾中。</p>`;
+                    container.innerHTML = `
+                        <div style="background:#FFF0F3; padding:2rem; border-radius:15px; border:1px solid #FFCDB2; text-align:center;">
+                            <h3 style="color:#E5989B; margin-top:0;">⚠️ 讀取失敗</h3>
+                            <p style="font-weight:bold; color:#D67C80;">錯誤訊息：${err.message}</p>
+                            <hr style="border:0; border-top:1px dashed #FFCDB2; margin:15px 0;">
+                            <p style="font-size:0.9rem; color:#888; text-align:left; display:inline-block;">
+                                <b>可能原因排查：</b><br>
+                                1. 請確認 GitHub 上的 <code>notes</code> 資料夾內真的有 <b>${filename}</b>。<br>
+                                2. 注意大小寫 (GitHub 區分大小寫)：<b>QGIS.md</b> 不等於 <b>qgis.md</b>。<br>
+                                3. 若剛上傳檔案，請等待 1-2 分鐘後重新整理網頁。
+                            </p>
+                        </div>`;
                 });
         }
     </script>
