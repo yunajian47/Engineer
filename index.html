@@ -759,22 +759,30 @@
         }
 
         // ==========================================
-        // ★★★ Markdown 圖片自動修復 (Image Fix) ★★★
+        // ★★★ Markdown 圖片自動修復 (Image Fix) - 已修正空格與中文問題 ★★★
         // ==========================================
         const renderer = {
             image(href, title, text) {
-                // 如果圖片路徑不是網址，且沒包含 "notes/"
-                // 用來修補標準 Markdown 語法 ![](image.png) 的路徑問題
-                if (href && !href.startsWith('http') && !href.startsWith('notes/')) {
-                    // 如果原本寫 "所有圖片/1.png"，改成 "notes/所有圖片/1.png"
-                    if(href.startsWith('所有圖片/')) {
-                        href = 'notes/' + href;
-                    } else {
-                        // 否則預設指向 "notes/所有圖片/"
-                        href = 'notes/所有圖片/' + href;
+                // 1. 路徑補全邏輯
+                if (href && !href.startsWith('http')) {
+                    // 先解碼避免重複編碼導致錯誤
+                    try { href = decodeURI(href); } catch(e) {}
+
+                    if (!href.startsWith('notes/')) {
+                        if(href.startsWith('所有圖片/')) {
+                            href = 'notes/' + href;
+                        } else {
+                            // 預設指向 "notes/所有圖片/"
+                            href = 'notes/所有圖片/' + href;
+                        }
                     }
                 }
-                return `<img src="${href}" alt="${text}">`;
+
+                // 2. ★關鍵修正★：將路徑進行 URL 編碼
+                // 這會把 "Pasted image" 變成 "Pasted%20image"，解決斷圖問題
+                const encodedHref = encodeURI(href);
+
+                return `<img src="${encodedHref}" alt="${text}" style="max-width:100%; border-radius:12px; margin:1rem 0; box-shadow:0 4px 10px rgba(0,0,0,0.1);">`;
             }
         };
         // 啟用自定義渲染器
@@ -782,7 +790,7 @@
 
 
         // ==========================================
-        // ★★★ 名詞解釋資料庫 (Glossary) ★★★
+        // ★★★ 名詞解釋資料庫 (Glossary) - 保持不變 ★★★
         // ==========================================
         const glossary = {
             "masterplan": { title: "污水下水道系統規劃 (Master Plan)", desc: "都市污水處理的最高指導原則與長期願景。通常設定目標年為 20~30 年，定義集污區範圍、處理廠位置與主幹管路線，是爭取預算與分期建設的依據。" },
@@ -914,7 +922,9 @@
             }
         }
 
-        // ★★★ 核心：讀取並轉換 Markdown (包含 Obsidian 語法修復) ★★★
+        // ==========================================
+        // ★★★ 核心：讀取並轉換 Markdown (已修復 Obsidian 格式) ★★★
+        // ==========================================
         function loadMarkdown(filename, btnElement) {
             const container = document.getElementById('markdown-container');
             const path = './notes/' + filename; 
@@ -924,7 +934,7 @@
                 btnElement.classList.add('active');
             }
 
-            container.innerHTML = '<p style="color:#aaa;">Loading content...</p>';
+            container.innerHTML = '<div style="text-align:center; padding:2rem; color:#aaa;"><i class="fa-solid fa-spinner fa-spin"></i> Loading content...</div>';
 
             fetch(path)
                 .then(response => {
@@ -932,19 +942,25 @@
                     return response.text();
                 })
                 .then(text => {
-                    // ★★★ 重點：強制修正 Obsidian 的 ![[...]] 格式 ★★★
-                    // 將 ![[檔名.png]] 轉換為標準格式 ![](notes/所有圖片/檔名.png)
-                    text = text.replace(/!\[\[(.*?)\]\]/g, '![](notes/所有圖片/$1)');
+                    // ★關鍵修正★：針對 Obsidian 的 ![[...]] 格式進行處理
+                    // 1. 抓出檔名
+                    // 2. 進行 encodeURI 編碼 (解決空格和中文問題)
+                    // 3. 轉成標準 Markdown ![](...)
+                    text = text.replace(/!\[\[(.*?)\]\]/g, (match, filename) => {
+                        const cleanName = filename.split('/').pop();
+                        const encodedName = encodeURI(cleanName);
+                        return `![](notes/所有圖片/${encodedName})`;
+                    });
 
                     container.innerHTML = marked.parse(text);
                     if(window.MathJax) MathJax.typesetPromise([container]);
                 })
                 .catch(err => {
-                    container.innerHTML = `<p style="color:red;">讀取失敗：無法載入 <b>${filename}</b><br>請確認檔案是否已放入【notes】資料夾中。</p>`;
+                    console.error(err);
+                    container.innerHTML = `<p style="color:red; text-align:center;">讀取失敗：無法載入 <b>${filename}</b><br>請確認檔案是否已放入【notes】資料夾中。</p>`;
                 });
         }
     </script>
 
 </body>
 </html>
-
