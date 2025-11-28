@@ -45,7 +45,7 @@
             --z-sidebar: 100;
             --z-mobile-btn: 101;
             --z-modal: 1000;
-            --z-login: 9999; /* 確保登入層在最最上面 */
+            --z-login: 9999;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -60,11 +60,11 @@
             line-height: 1.8;
         }
 
-        /* ★★★ 新增：登入遮罩層樣式 ★★★ */
+        /* ★★★ 登入遮罩層樣式 ★★★ */
         #login-overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(255, 249, 245, 0.98); /* 不透明度高一點，遮住內容 */
-            backdrop-filter: blur(15px); /* 強烈模糊背景 */
+            background: rgba(255, 249, 245, 0.98);
+            backdrop-filter: blur(15px);
             z-index: var(--z-login);
             display: flex; justify-content: center; align-items: center;
             transition: opacity 0.6s ease, visibility 0.6s ease;
@@ -763,14 +763,15 @@
         // ==========================================
         const renderer = {
             image(href, title, text) {
-                // 如果圖片路徑不是網址，且沒包含 "筆記/"，就自動加上 "筆記/所有圖片/"
+                // 如果圖片路徑不是網址，且沒包含 "notes/"
                 // 用來修補標準 Markdown 語法 ![](image.png) 的路徑問題
-                if (href && !href.startsWith('http') && !href.startsWith('筆記/')) {
-                    // 如果原本寫 "所有圖片/1.png"，改成 "筆記/所有圖片/1.png"
+                if (href && !href.startsWith('http') && !href.startsWith('notes/')) {
+                    // 如果原本寫 "所有圖片/1.png"，改成 "notes/所有圖片/1.png"
                     if(href.startsWith('所有圖片/')) {
-                        href = '筆記/' + href;
+                        href = 'notes/' + href;
                     } else {
-                        href = '筆記/所有圖片/' + href;
+                        // 否則預設指向 "notes/所有圖片/"
+                        href = 'notes/所有圖片/' + href;
                     }
                 }
                 return `<img src="${href}" alt="${text}">`;
@@ -916,7 +917,7 @@
         // ★★★ 核心：讀取並轉換 Markdown (包含 Obsidian 語法修復) ★★★
         function loadMarkdown(filename, btnElement) {
             const container = document.getElementById('markdown-container');
-            const path = './筆記/' + filename; 
+            const path = './notes/' + filename; 
 
             if(btnElement) {
                 document.querySelectorAll('#view-tools .tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -932,14 +933,14 @@
                 })
                 .then(text => {
                     // ★★★ 重點：強制修正 Obsidian 的 ![[...]] 格式 ★★★
-                    // 將 ![[檔名.png]] 轉換為標準格式 ![](筆記/所有圖片/檔名.png)
-                    text = text.replace(/!\[\[(.*?)\]\]/g, '![](筆記/所有圖片/$1)');
+                    // 將 ![[檔名.png]] 轉換為標準格式 ![](notes/所有圖片/檔名.png)
+                    text = text.replace(/!\[\[(.*?)\]\]/g, '![](notes/所有圖片/$1)');
 
                     container.innerHTML = marked.parse(text);
                     if(window.MathJax) MathJax.typesetPromise([container]);
                 })
                 .catch(err => {
-                    container.innerHTML = `<p style="color:red;">讀取失敗：無法載入 <b>${filename}</b><br>請確認檔案是否已放入【筆記】資料夾中。</p>`;
+                    container.innerHTML = `<p style="color:red;">讀取失敗：無法載入 <b>${filename}</b><br>請確認檔案是否已放入【notes】資料夾中。</p>`;
                 });
         }
     </script>
