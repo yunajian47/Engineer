@@ -42,9 +42,10 @@
             --radius-md: 16px;
             
             --z-blob: -1;
-            --z-modal: 1000;
             --z-sidebar: 100;
             --z-mobile-btn: 101;
+            --z-modal: 1000;
+            --z-login: 9999; /* 確保登入層在最最上面 */
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -58,6 +59,38 @@
             overflow-x: hidden;
             line-height: 1.8;
         }
+
+        /* ★★★ 新增：登入遮罩層樣式 ★★★ */
+        #login-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(255, 249, 245, 0.98); /* 不透明度高一點，遮住內容 */
+            backdrop-filter: blur(15px); /* 強烈模糊背景 */
+            z-index: var(--z-login);
+            display: flex; justify-content: center; align-items: center;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+        .login-card {
+            background: white; padding: 3rem; border-radius: 30px;
+            box-shadow: 0 25px 50px -12px rgba(229, 152, 155, 0.25);
+            text-align: center; max-width: 400px; width: 90%;
+            border: 2px solid white;
+        }
+        .login-title { font-family: 'DM Serif Display', serif; font-size: 2.5rem; color: var(--text-title); margin-bottom: 0.5rem; }
+        .login-input {
+            width: 100%; padding: 15px; margin: 20px 0; border: 2px solid #EEE;
+            border-radius: 15px; font-size: 1.1rem; text-align: center; outline: none; transition: 0.3s;
+            background: #FAFAFA;
+        }
+        .login-input:focus { border-color: var(--color-rose); background: white; }
+        .login-btn {
+            background: var(--color-rose); color: white; border: none;
+            padding: 12px 40px; border-radius: 50px; font-size: 1.1rem; font-weight: 800;
+            cursor: pointer; transition: 0.3s; box-shadow: 0 10px 20px -5px rgba(229, 152, 155, 0.4);
+        }
+        .login-btn:hover { transform: translateY(-3px); box-shadow: 0 15px 30px -5px rgba(229, 152, 155, 0.6); }
+        .shake { animation: shake 0.5s; }
+        @keyframes shake { 0% { transform: translateX(0); } 25% { transform: translateX(-10px); } 50% { transform: translateX(10px); } 75% { transform: translateX(-10px); } 100% { transform: translateX(0); } }
+
 
         /* --- 背景裝飾 --- */
         .blob { position: fixed; border-radius: 50%; filter: blur(80px); z-index: var(--z-blob); opacity: 0.6; animation: floatBlob 10s infinite alternate; }
@@ -163,9 +196,9 @@
         .note-box { background: var(--color-note); padding: 2rem; border-radius: var(--radius-md); margin: 2rem 0; border-left: 5px solid var(--color-sand); box-shadow: 0 5px 15px rgba(0,0,0,0.03); }
         .risk-box { background: var(--color-risk); padding: 2rem; border-radius: var(--radius-md); margin: 2rem 0; border: 1px solid #FFDEE2; position: relative; }
         
-        /* 表格優化：增加容器以支持橫向捲動 */
+        /* 表格優化 */
         .table-container { width: 100%; overflow-x: auto; border-radius: 12px; margin: 1.5rem 0; border: 1px solid #EEE; }
-        .styled-table { width: 100%; border-collapse: collapse; font-size: 0.95rem; background: white; min-width: 600px; } /* min-width確保手機上不會太擠 */
+        .styled-table { width: 100%; border-collapse: collapse; font-size: 0.95rem; background: white; min-width: 600px; }
         .styled-table th, .styled-table td { padding: 18px 25px; border-bottom: 1px solid #EEE; text-align: left; vertical-align: middle; }
         .styled-table th { background: #FAFAFA; color: var(--color-sage); font-weight: 800; border-bottom: 2px solid var(--color-sage); white-space: nowrap; }
         .styled-table tr:last-child td { border-bottom: none; }
@@ -183,13 +216,9 @@
 
         /* 名詞解釋連結與彈窗 */
         .def-link {
-            color: var(--color-rose);
-            font-weight: 700;
-            cursor: pointer;
-            border-bottom: 1px dashed var(--color-rose);
-            transition: all 0.2s;
-            position: relative;
-            padding-bottom: 1px;
+            color: var(--color-rose); font-weight: 700; cursor: pointer;
+            border-bottom: 1px dashed var(--color-rose); transition: all 0.2s;
+            position: relative; padding-bottom: 1px;
         }
         .def-link:hover { background-color: var(--color-rose-light); border-bottom-style: solid; color: #D67C80; }
         .def-link::after { content: '?'; font-size: 0.7rem; vertical-align: super; margin-left: 2px; opacity: 0.6; font-weight: 800; }
@@ -235,7 +264,7 @@
         .status-yellow { background: #FFD93D; color: #555; }
         .status-red { background: #FF6B6B; }
 
-        /* Phase 4 內部 Tab & ★★★ 新增：Tools 的 Tab 樣式 ★★★ */
+        /* Phase 4 內部 Tab & Tools 的 Tab 樣式 */
         .tab-nav { display: flex; gap: 1rem; border-bottom: 2px solid #F0F0F0; margin-bottom: 2.5rem; overflow-x: auto; padding-bottom: 10px; }
         .tab-btn { 
             padding: 10px 20px; background: none; border: none; font-size: 1.1rem; 
@@ -247,7 +276,7 @@
         .inner-tab-content { display: none; animation: fadeIn 0.4s ease; }
         .inner-tab-content.active { display: block; }
 
-        /* ★★★ 新增：Markdown 容器樣式 ★★★ */
+        /* Markdown 容器樣式 */
         #markdown-container { background: white; padding: 3rem; border-radius: var(--radius-bubble); box-shadow: 0 5px 30px rgba(0,0,0,0.02); margin-top: 1rem; }
         #markdown-container h1 { color: var(--text-title); font-size: 2rem; margin-bottom: 1.5rem; border-bottom: 2px solid var(--color-rose-light); padding-bottom: 10px; }
         #markdown-container h2 { color: var(--color-rose); margin-top: 2rem; margin-bottom: 1rem; font-family: 'DM Serif Display'; font-size: 1.8rem; }
@@ -293,6 +322,16 @@
 
     <div class="blob blob-1"></div>
     <div class="blob blob-2"></div>
+
+    <div id="login-overlay">
+        <div class="login-card" id="login-box">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">🔒</div>
+            <div class="login-title">Water Diary</div>
+            <p style="color: #999; margin-bottom: 1rem;">請輸入密碼解鎖</p>
+            <input type="password" id="password-input" class="login-input" placeholder="Password">
+            <button class="login-btn" onclick="checkPassword()">Unlock</button>
+        </div>
+    </div>
 
     <div class="modal-overlay" id="glossary-modal" onclick="closeModal(event)">
         <div class="modal-card" onclick="event.stopPropagation()">
@@ -694,7 +733,55 @@
 
     <script>
         // ==========================================
-        // ★★★ 名詞解釋資料庫 (Phase 1-5 完整版) ★★★
+        // ★★★ 密碼鎖邏輯 (Password Lock) ★★★
+        // ==========================================
+        const CORRECT_PASSWORD = "beautyyuna";
+
+        document.getElementById("password-input").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") { checkPassword(); }
+        });
+
+        function checkPassword() {
+            const input = document.getElementById("password-input").value;
+            const overlay = document.getElementById("login-overlay");
+            const box = document.getElementById("login-box");
+
+            if (input === CORRECT_PASSWORD) {
+                // 密碼正確：淡出並隱藏
+                overlay.style.opacity = "0";
+                overlay.style.visibility = "hidden";
+            } else {
+                // 密碼錯誤：清空並搖晃
+                box.classList.add("shake");
+                document.getElementById("password-input").value = "";
+                setTimeout(() => { box.classList.remove("shake"); }, 500);
+            }
+        }
+
+        // ==========================================
+        // ★★★ Markdown 圖片自動修復 (Image Fix) ★★★
+        // ==========================================
+        const renderer = {
+            image(href, title, text) {
+                // 如果圖片路徑不是網址，且沒包含 "筆記/"，就自動加上 "筆記/所有圖片/"
+                // 用來修補標準 Markdown 語法 ![](image.png) 的路徑問題
+                if (href && !href.startsWith('http') && !href.startsWith('筆記/')) {
+                    // 如果原本寫 "所有圖片/1.png"，改成 "筆記/所有圖片/1.png"
+                    if(href.startsWith('所有圖片/')) {
+                        href = '筆記/' + href;
+                    } else {
+                        href = '筆記/所有圖片/' + href;
+                    }
+                }
+                return `<img src="${href}" alt="${text}">`;
+            }
+        };
+        // 啟用自定義渲染器
+        marked.use({ renderer });
+
+
+        // ==========================================
+        // ★★★ 名詞解釋資料庫 (Glossary) ★★★
         // ==========================================
         const glossary = {
             "masterplan": { title: "污水下水道系統規劃 (Master Plan)", desc: "都市污水處理的最高指導原則與長期願景。通常設定目標年為 20~30 年，定義集污區範圍、處理廠位置與主幹管路線，是爭取預算與分期建設的依據。" },
@@ -765,7 +852,6 @@
 
         // Tab Switching Logic (Inner Tabs)
         function switchInnerTab(tabId, btn) {
-            // Find parent section to scope the query
             const parentSection = btn.closest('.view-section');
             parentSection.querySelectorAll('.inner-tab-content').forEach(el => el.classList.remove('active'));
             parentSection.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
@@ -773,49 +859,38 @@
             btn.classList.add('active');
         }
 
-        // Main Navigation Logic (已更新：包含 tools 切換)
+        // Main Navigation Logic
         function navigate(targetId) {
-            // 1. Remove active states
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.sub-item').forEach(el => el.classList.remove('active'));
 
-            // 2. Add active state to View
             const viewId = 'view-' + targetId;
             const viewEl = document.getElementById(viewId);
             if(viewEl) viewEl.classList.add('active');
 
-            // 3. Add active state to Sidebar Item
-            // Check if it's a main nav item or sub item
             const mainNavItem = document.querySelector(`.nav-item[data-target="${targetId}"]`);
             if (mainNavItem) {
                 mainNavItem.classList.add('active');
                 
-                // ★★★ 新增：如果切換到 Tools，預設載入第一個檔案 ★★★
+                // 如果切換到 Tools，預設載入第一個檔案
                 if(targetId === 'tools') {
-                    // 檢查容器是否還是空的，如果是空的才載入預設值
                     if(document.getElementById('markdown-container').innerText.includes('請點擊')) {
                         loadMarkdown('QGIS.md', document.querySelector('#view-tools .tab-btn'));
                     }
                 }
 
             } else {
-                // It might be a sub-item
                 const subItem = document.querySelector(`.sub-item[data-target="${targetId}"]`);
                 if(subItem) {
                     subItem.classList.add('active');
-                    // Ensure parent dropdown is open and active
                     const parentBtn = document.getElementById('btn-learn');
                     parentBtn.classList.add('active');
                     parentBtn.classList.add('open');
                     document.getElementById('menu-learn').style.display = 'flex';
                 }
             }
-            
-            // 4. Mobile: Close sidebar after click
             toggleSidebar(false);
-
-            // 5. Scroll to top
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -838,34 +913,33 @@
             }
         }
 
-        // ★★★ 新增：讀取並轉換 Markdown 的核心功能 ★★★
+        // ★★★ 核心：讀取並轉換 Markdown (包含 Obsidian 語法修復) ★★★
         function loadMarkdown(filename, btnElement) {
             const container = document.getElementById('markdown-container');
-            const path = './notes/' + filename; // 檔案路徑
+            const path = './筆記/' + filename; 
 
-            // 處理按鈕樣式
             if(btnElement) {
-                // 只針對 #view-tools 裡面的按鈕移除 active
                 document.querySelectorAll('#view-tools .tab-btn').forEach(btn => btn.classList.remove('active'));
                 btnElement.classList.add('active');
             }
 
             container.innerHTML = '<p style="color:#aaa;">Loading content...</p>';
 
-            // 抓取檔案
             fetch(path)
                 .then(response => {
                     if (!response.ok) throw new Error("找不到檔案");
                     return response.text();
                 })
                 .then(text => {
-                    // 使用 marked.js 轉換
+                    // ★★★ 重點：強制修正 Obsidian 的 ![[...]] 格式 ★★★
+                    // 將 ![[檔名.png]] 轉換為標準格式 ![](筆記/所有圖片/檔名.png)
+                    text = text.replace(/!\[\[(.*?)\]\]/g, '![](筆記/所有圖片/$1)');
+
                     container.innerHTML = marked.parse(text);
-                    // 如果有數學公式，重新渲染
                     if(window.MathJax) MathJax.typesetPromise([container]);
                 })
                 .catch(err => {
-                    container.innerHTML = `<p style="color:red;">讀取失敗：${err.message}<br>請確認 notes 資料夾內是否有 <b>${filename}</b> 檔案。</p>`;
+                    container.innerHTML = `<p style="color:red;">讀取失敗：無法載入 <b>${filename}</b><br>請確認檔案是否已放入【筆記】資料夾中。</p>`;
                 });
         }
     </script>
