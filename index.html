@@ -378,12 +378,12 @@
         <section id="view-dashboard" class="view-section active">
             <header>
                 <h1>Hello, <span>Engineer</span></h1>
-                <p class="subtitle">今天又要上班了 😩 但至少為了這座城市的靜脈努力。</p>
+                <p class="subtitle">今天又要上班了 😩 </p>
             </header>
             <div class="grid-cards">
                 <div class="pretty-card" onclick="navigate('tools')"><div class="card-emoji">📂</div><div class="card-name">資料庫</div><div class="card-desc">點此查詢 QGIS、地政、水利相關操作手冊。</div></div>
-                <div class="pretty-card"><div class="card-emoji">🧮</div><div class="card-name">SVI 計算機</div><div class="card-desc">輸入 SV30 與 MLSS，快速判斷污泥沈降性。</div></div>
-                <div class="pretty-card"><div class="card-emoji">🧪</div><div class="card-name">藥劑小幫手</div><div class="card-desc">PAC / Polymer 泡藥濃度與每分鐘流量換算。</div></div>
+                <div class="pretty-card"><div class="card-emoji">🧮</div><div class="card-name">污水管流簡易計算機</div><div class="card-desc">輸入水量與管徑，快速判斷設計合理性。</div></div>
+                <div class="pretty-card"><div class="card-emoji">🧪</div><div class="card-name">工程小幫手</div><div class="card-desc">常用管徑換算。</div></div>
                 <div class="pretty-card"><div class="card-emoji">🚑</div><div class="card-name">SOS 救援</div><div class="card-desc">異常狀況排除的標準流程決策樹。</div></div>
             </div>
         </section>
@@ -521,10 +521,10 @@
                     <p>核心在於「正確預估流量」並「提供安全輸送能力」。這不僅是套用公式，而是對每一個參數進行風險評估後的決策。</p>
                     
                     <h3>3.1 流量與水力設計：參數選定</h3>
-                    <p>依據《下水道系統設計及解說》，必須以<strong><span class="def-link" onclick="openDef('qmh')">計畫最大時污水量 ($Q_{mh}$)</span></strong> 作為設計基礎。</p>
+                    <p>依據《下水道系統設計及解說》，必須以<strong><span class="def-link" onclick="openDef('qmax')">計畫最大日污水量 ($Q_{max}$)</span></strong> 作為設計基礎。</p>
                     <div class="math-box">
-                        $$Q_{mh} = Q_{avg} \times PF + Q_{inf}$$
-                        $$Q_{mh} = (\text{計畫人口} \times \text{單位污水量}) \times \text{尖峰係數} + \text{地下水入滲量}$$
+                        $$Q_{max} = Q_{avg} \times PF + Q_{inf}$$
+                        $$Q_{max} = (\text{計畫人口} \times \text{單位污水量}) \times \text{尖峰係數} + \text{地下水入滲量}$$
                     </div>
                     <div class="note-box">
                         <h4>1. 計畫人口 ($P$)</h4>
@@ -797,7 +797,7 @@
             "epb": { title: "土壓平衡式 (EPB)", desc: "Earth Pressure Balance。利用切削下来的土砂充滿機頭土艙，透過螺旋排土器控制壓力，來平衡前方的地下水壓與土壓，防止崩塌。" },
             "gravel": { title: "卵礫石層 (Gravel)", desc: "含有大量圓形石塊的地層。石塊硬度高且孔隙大，容易卡死掘進機頭或導致泥水流失（逸漿），是推進工程中最棘手的地質之一。" },
             "mud": { title: "泥濃式推進 (Mud Dense)", desc: "使用高濃度、高黏滯性的特製泥漿。能有效將卵礫石「包覆」並懸浮運出，且泥漿不易流失，是卵礫石層的首選工法。" },
-            "qmh": { title: "計畫最大時污水量 (Qmh)", desc: "Maximum Hourly Flow。設計管渠容量的基準。考量一天中用水量最高的時段（如早晚尖峰）再加上地下水入滲量，確保管線不會滿溢。" },
+            "qmax": { title: "計畫最大日污水量 (Qmax)", desc: "Maximum Hourly Flow。設計管渠容量的基準。考量一天中用水量最高的時段（如早晚尖峰）再加上地下水入滲量，確保管線不會滿溢。" },
             "lpcd": { title: "單位污水量 (LPCD)", desc: "Liters Per Capita per Day。平均每人每天產生的污水公升數。計算公式為：每人用水量 ×污水轉換率（通常為 0.9）。" },
             "pf": { title: "尖峰係數 (Peaking Factor)", desc: "最大時流量與平均日流量的比值。人口越少的社區，大家作息越同步，瞬間用水波動越大，PF 值通常介於 2~4 之間。" },
             "manning": { title: "曼寧公式 (Manning Formula)", desc: "土木水利工程計算明渠流速最常用的公式。流速 V 取決於粗糙係數 n、水力半徑 R 與坡度 S。" },
@@ -947,3 +947,4 @@
 
 </body>
 </html>
+
